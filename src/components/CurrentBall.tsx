@@ -1,23 +1,30 @@
 // ============================================
-// D-IA-NE BINGO TRACKER v1.0
+// D-IA/NE BINGO TRACKER v1.1
 // Composant : Encart "Boule en cours"
 // ============================================
-// Affiche en GROS le dernier numero tire (ex: G - 52).
-// Si aucun numero n'est tire, affiche un message d'attente.
+// Meme format/gabarit que le bouton BINGO (padding, taille texte,
+// coins arrondis, bordure blanche). Affiche le dernier numero tire.
 
 import { getLetterForNumber } from '../lib/bingoLogic'
 
 interface CurrentBallProps {
-  lastDrawn: number | null  // Le dernier numero tire, ou null si aucun
+  lastDrawn: number | null
 }
 
 function CurrentBall({ lastDrawn }: CurrentBallProps) {
   // Cas : aucun numero tire encore
   if (lastDrawn === null) {
     return (
-      <div className="bg-slate-800/60 border border-slate-700 rounded-2xl py-3 px-6 flex items-center justify-center gap-3">
-        <i className="fa-solid fa-circle-notch text-slate-500 text-2xl"></i>
-        <span className="font-display text-slate-400 text-lg sm:text-xl font-semibold">
+      <div className="
+        h-full
+        bg-slate-800/60
+        border-4 border-slate-600
+        rounded-2xl
+        px-6
+        flex items-center justify-center gap-3
+      ">
+        <i className="fa-solid fa-circle-notch text-slate-500 text-xl sm:text-2xl"></i>
+        <span className="font-display text-slate-400 text-lg sm:text-xl font-semibold uppercase tracking-wider">
           En attente du premier tirage...
         </span>
       </div>
@@ -29,31 +36,29 @@ function CurrentBall({ lastDrawn }: CurrentBallProps) {
 
   return (
     <div
-      // La cle (key) force la re-animation a chaque nouveau numero
       key={lastDrawn}
       className="
+        h-full
         bg-gradient-to-r from-red-600 to-rose-700
-        border-2 border-white/30
+        border-4 border-white
         rounded-2xl
-        py-3 px-6
+        px-6
         flex items-center justify-center gap-4
         shadow-lg shadow-red-500/30
         animate-popIn
       "
     >
       {/* Icone boule */}
-      <i className="fa-solid fa-circle-dot text-white/80 text-3xl sm:text-4xl"></i>
+      <i className="fa-solid fa-circle-dot text-white/80 text-xl sm:text-2xl"></i>
 
       {/* Libelle */}
-      <span className="font-display text-white/80 text-base sm:text-lg font-semibold uppercase tracking-widest hidden sm:inline">
+      <span className="font-display text-white/80 text-lg sm:text-xl font-semibold uppercase tracking-wider">
         Boule&nbsp;:
       </span>
 
-      {/* La lettre + le numero en TRES gros */}
-      <span className="font-display text-white text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-none">
-        {letter}
-        <span className="text-white/60 mx-1">-</span>
-        {lastDrawn}
+      {/* La lettre + le numero (meme taille que le texte BINGO) */}
+      <span className="font-display text-white text-xl sm:text-2xl font-extrabold tracking-wider uppercase leading-none">
+        {letter} - {lastDrawn}
       </span>
     </div>
   )
