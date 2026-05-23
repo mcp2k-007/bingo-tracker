@@ -2,16 +2,13 @@
 // D-IA-NE BINGO TRACKER v1.0
 // Composant : Une case numerotee cliquable
 // ============================================
-// Affiche un seul numero de bingo.
-//   - Etat normal  : fond blanc, texte noir, bordure noire
-//   - Etat sorti   : fond gris pale (numero tire)
 // La case remplit toute la hauteur de sa rangee (auto-scaling).
+// La taille du texte s'adapte automatiquement a l'espace disponible.
 
-// Proprietes que ce composant recoit de son parent
 interface BingoCellProps {
-  value: number              // Le numero a afficher (ex: 52)
-  isDrawn: boolean           // Est-ce que ce numero est sorti ?
-  onToggle: (value: number) => void  // Fonction appelee au clic
+  value: number
+  isDrawn: boolean
+  onToggle: (value: number) => void
 }
 
 function BingoCell({ value, isDrawn, onToggle }: BingoCellProps) {
@@ -19,15 +16,15 @@ function BingoCell({ value, isDrawn, onToggle }: BingoCellProps) {
     <button
       onClick={() => onToggle(value)}
       className={`
-        w-full h-full
+        w-full h-full min-h-0
         flex items-center justify-center
-        rounded-md
+        rounded-sm sm:rounded-md
         font-bold
-        border-2 border-black
+        border border-black sm:border-2
         transition-all duration-100
         select-none
         leading-none
-        text-[clamp(0.75rem,2.8vw,1.5rem)]
+        text-[clamp(0.65rem,1.8vh,1.4rem)]
         ${
           isDrawn
             ? 'bg-gray-300 text-gray-700 shadow-inner'
