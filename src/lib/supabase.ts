@@ -25,4 +25,6 @@ export interface GameStateRow {
   drawn_numbers: number[]
   started_at: string | null
   updated_at: string
+  bingo_active: boolean
+  bingo_started_at: string | null
 }

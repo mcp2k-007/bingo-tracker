@@ -2,26 +2,42 @@
 // D-IA/NE BINGO TRACKER v1.1
 // Hook : Ecoute temps reel pour les spectateurs
 // ============================================
-// Ce hook s'abonne aux changements de game_state
-// via Supabase Realtime (WebSocket).
-// Chaque clic de Diane → spectateurs voient en direct.
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { supabase } from '../lib/supabase'
 import type { GameStateRow } from '../lib/supabase'
 
 export function useRealtimeGame() {
-  // Etat : numeros tires (mis a jour en temps reel)
   const [drawnNumbers, setDrawnNumbers] = useState<number[]>([])
   const [startedAt, setStartedAt] = useState<string | null>(null)
+  const [bingoActive, setBingoActive] = useState<boolean>(false)
+  const [bingoStartedAt, setBingoStartedAt] = useState<string | null>(null)
+  const [bingoElapsed, setBingoElapsed] = useState<number>(0)
   const [isConnected, setIsConnected] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(true)
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  // Timer BINGO pour spectateurs
+  useEffect(() => {
+    if (bingoActive && bingoStartedAt) {
+      timerRef.current = setInterval(() => {
+        const start = new Date(bingoStartedAt).getTime()
+        const now = Date.now()
+        setBingoElapsed(Math.floor((now - start) / 1000))
+      }, 1000)
+    } else {
+      if (timerRef.current) {
+        clearInterval(timerRef.current)
+        timerRef.current = null
+      }
+      setBingoElapsed(0)
+    }
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current)
+    }
+  }, [bingoActive, bingoStartedAt])
 
   useEffect(() => {
-    // ============================================
-    // 1. CHARGEMENT INITIAL
-    // Charge l'etat actuel de la partie au demarrage
-    // ============================================
     async function loadInitialState() {
       try {
         const { data, error } = await supabase
@@ -29,13 +45,14 @@ export function useRealtimeGame() {
           .select('*')
           .eq('id', 'current_game')
           .single()
-
         if (error) {
           console.error('Erreur chargement initial :', error.message)
         } else if (data) {
           const row = data as GameStateRow
           setDrawnNumbers(row.drawn_numbers ?? [])
           setStartedAt(row.started_at)
+          setBingoActive(row.bingo_active ?? false)
+          setBingoStartedAt(row.bingo_started_at)
         }
       } catch (error) {
         console.error('Erreur reseau :', error)
@@ -43,64 +60,43 @@ export function useRealtimeGame() {
         setIsLoading(false)
       }
     }
-
     loadInitialState()
 
-    // ============================================
-    // 2. ABONNEMENT TEMPS REEL (WebSocket)
-    // Ecoute chaque mise a jour de game_state
-    // ============================================
     const channel = supabase
       .channel('game_state_changes')
       .on(
         'postgres_changes',
-        {
-          event: 'UPDATE',
-          schema: 'public',
-          table: 'game_state',
-          filter: 'id=eq.current_game',
-        },
+        { event: 'UPDATE', schema: 'public', table: 'game_state', filter: 'id=eq.current_game' },
         (payload) => {
-          // Une mise a jour a ete detectee !
           const newRow = payload.new as GameStateRow
           setDrawnNumbers(newRow.drawn_numbers ?? [])
           setStartedAt(newRow.started_at)
+          setBingoActive(newRow.bingo_active ?? false)
+          setBingoStartedAt(newRow.bingo_started_at)
         }
       )
       .subscribe((status) => {
-        // Statut de la connexion WebSocket
-        if (status === 'SUBSCRIBED') {
-          setIsConnected(true)
-        } else if (status === 'CLOSED' || status === 'CHANNEL_ERROR') {
-          setIsConnected(false)
-        }
+        if (status === 'SUBSCRIBED') setIsConnected(true)
+        else if (status === 'CLOSED' || status === 'CHANNEL_ERROR') setIsConnected(false)
       })
 
-    // ============================================
-    // 3. NETTOYAGE
-    // Deconnexion quand le composant est demonte
-    // ============================================
-    return () => {
-      supabase.removeChannel(channel)
-    }
+    return () => { supabase.removeChannel(channel) }
   }, [])
 
-  // Valeurs derivees
   const drawnCount = drawnNumbers.length
   const remainingCount = 75 - drawnCount
-  const lastDrawn = drawnNumbers.length > 0
-    ? drawnNumbers[drawnNumbers.length - 1]
-    : null
+  const lastDrawn = drawnCount > 0 ? drawnNumbers[drawnCount - 1] : null
   const drawnNumbersRecentFirst = [...drawnNumbers].reverse()
 
+  function formatBingoTimer(seconds: number): string {
+    const m = Math.floor(seconds / 60)
+    const s = seconds % 60
+    return `${m}m${String(s).padStart(2, '0')}sec`
+  }
+
   return {
-    drawnNumbers,
-    drawnNumbersRecentFirst,
-    drawnCount,
-    remainingCount,
-    lastDrawn,
-    startedAt,
-    isConnected,
-    isLoading,
+    drawnNumbers, drawnNumbersRecentFirst, drawnCount, remainingCount,
+    lastDrawn, startedAt, bingoActive, bingoElapsed,
+    isConnected, isLoading, formatBingoTimer,
   }
 }
