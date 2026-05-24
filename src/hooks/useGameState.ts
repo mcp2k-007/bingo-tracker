@@ -1,17 +1,18 @@
 // ============================================
-// D-IA-NE BINGO TRACKER v1.0
+// D-IA/NE BINGO TRACKER v1.1
 // Hook de gestion de l'etat de la partie
 // ============================================
 // Ce hook gere :
-//   - La liste des numeros tires (dans l'ordre)
-//   - La sauvegarde automatique dans le navigateur (localStorage)
-//   - La reprise de partie apres fermeture accidentelle
-//   - Le calcul de la duree de la partie (pour l'export)
+//   - L'etat local de la partie (React state)
+//   - La sauvegarde locale (localStorage)
+//   - La SYNCHRONISATION TEMPS REEL avec Supabase
+//   - Chaque clic de Diane → Supabase → spectateurs
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
+import { supabase } from '../lib/supabase'
 import type { GameState } from '../types'
 
-// Cle utilisee pour sauvegarder dans le navigateur
+// Cle localStorage pour la reprise apres fermeture
 const STORAGE_KEY = 'diane-bingo-game-state'
 
 // Etat initial : aucune partie en cours
@@ -21,7 +22,7 @@ const INITIAL_STATE: GameState = {
 }
 
 // ============================================
-// FONCTION : Charger l'etat sauvegarde au demarrage
+// FONCTION : Charger l'etat sauvegarde localement
 // ============================================
 function loadSavedState(): GameState {
   try {
@@ -30,8 +31,7 @@ function loadSavedState(): GameState {
       return JSON.parse(saved) as GameState
     }
   } catch (error) {
-    // En cas d'erreur de lecture, on repart d'une partie vierge
-    console.error('Erreur de chargement de la partie sauvegardee :', error)
+    console.error('Erreur chargement localStorage :', error)
   }
   return INITIAL_STATE
 }
@@ -40,92 +40,102 @@ function loadSavedState(): GameState {
 // HOOK PRINCIPAL : useGameState
 // ============================================
 export function useGameState() {
-  // Etat de la partie, initialise depuis la sauvegarde si elle existe
+  // Etat local React (affichage immediat)
   const [gameState, setGameState] = useState<GameState>(loadSavedState)
 
   // ============================================
-  // SAUVEGARDE AUTOMATIQUE
-  // A chaque changement de l'etat, on sauvegarde dans le navigateur
+  // SAUVEGARDE LOCALE AUTOMATIQUE (localStorage)
+  // A chaque changement → sauvegarde dans le navigateur
   // ============================================
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(gameState))
     } catch (error) {
-      console.error('Erreur de sauvegarde de la partie :', error)
+      console.error('Erreur sauvegarde localStorage :', error)
     }
   }, [gameState])
 
   // ============================================
+  // SYNCHRONISATION SUPABASE
+  // A chaque changement de l'etat → mise a jour dans Supabase
+  // Supabase diffuse ensuite aux spectateurs via WebSocket
+  // ============================================
+  const syncToSupabase = useCallback(async (state: GameState) => {
+    try {
+      const { error } = await supabase
+        .from('game_state')
+        .update({
+          drawn_numbers: state.drawnNumbers,
+          started_at: state.startedAt,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', 'current_game')
+
+      if (error) {
+        console.error('Erreur sync Supabase :', error.message)
+      }
+    } catch (error) {
+      console.error('Erreur reseau Supabase :', error)
+    }
+  }, [])
+
+  // ============================================
   // ACTION : Activer / Desactiver un numero (toggle)
-  // Clic = ajoute le numero ; re-clic = le retire
   // ============================================
   function toggleNumber(value: number) {
     setGameState((prev) => {
       const isAlreadyDrawn = prev.drawnNumbers.includes(value)
+      let newState: GameState
 
       if (isAlreadyDrawn) {
-        // Retirer le numero (correction d'erreur de clic)
-        return {
+        // Retirer le numero
+        newState = {
           ...prev,
           drawnNumbers: prev.drawnNumbers.filter((n) => n !== value),
         }
       } else {
-        // Ajouter le numero a la fin de la liste (le plus recent)
-        // Si c'est le premier numero, on enregistre l'heure de debut
-        return {
+        // Ajouter le numero
+        newState = {
           drawnNumbers: [...prev.drawnNumbers, value],
           startedAt: prev.startedAt ?? new Date().toISOString(),
         }
       }
+
+      // Sync Supabase en arriere-plan (sans bloquer l'UI)
+      syncToSupabase(newState)
+      return newState
     })
   }
 
   // ============================================
-  // ACTION : Reinitialiser la partie (nouvelle partie)
+  // ACTION : Reinitialiser la partie
   // ============================================
   function resetGame() {
-    setGameState(INITIAL_STATE)
+    const newState = INITIAL_STATE
+    setGameState(newState)
+    syncToSupabase(newState)
   }
 
   // ============================================
-  // VALEURS DERIVEES (calculees a partir de l'etat)
+  // VALEURS DERIVEES
   // ============================================
-
-  // Nombre de numeros sortis
   const drawnCount = gameState.drawnNumbers.length
-
-  // Nombre de numeros restants
   const remainingCount = 75 - drawnCount
-
-  // Le dernier numero tire (le plus recent), ou null si aucun
-  const lastDrawn =
-    gameState.drawnNumbers.length > 0
-      ? gameState.drawnNumbers[gameState.drawnNumbers.length - 1]
-      : null
-
-  // Liste des numeros tires, du plus recent au plus ancien
-  // (pour le bandeau : le plus recent a gauche)
+  const lastDrawn = gameState.drawnNumbers.length > 0
+    ? gameState.drawnNumbers[gameState.drawnNumbers.length - 1]
+    : null
   const drawnNumbersRecentFirst = [...gameState.drawnNumbers].reverse()
 
   // ============================================
-  // FONCTION : Calculer la duree de la partie en minutes
-  // Du debut (1ere boule) jusqu'a maintenant (ou heure de fin fournie)
+  // FONCTION : Calculer la duree de la partie
   // ============================================
   function getDurationMinutes(endTime?: string): number {
     if (!gameState.startedAt) return 0
-
     const start = new Date(gameState.startedAt).getTime()
     const end = endTime ? new Date(endTime).getTime() : Date.now()
-
-    const diffMs = end - start
-    const diffMinutes = Math.round(diffMs / 1000 / 60)
-
-    return diffMinutes
+    return Math.round((end - start) / 1000 / 60)
   }
 
-  // ============================================
-  // On expose tout ce dont l'application a besoin
-  // ============================================
   return {
     drawnNumbers: gameState.drawnNumbers,
     drawnNumbersRecentFirst,
