@@ -2,50 +2,29 @@
 // D-IA/NE BINGO TRACKER v1.1
 // Composant : Espace Publicitaire (AdBanner)
 // ============================================
-// Composant evolutif : commence en version simple
-// (placeholder), sera ameliore au fil du temps.
-// UNIQUEMENT sur la page spectateur (/live).
+// Affiche le logo du commanditaire (image dans /public).
+// Clic -> redirige vers le site du sponsor (nouvel onglet).
 
 interface AdBannerProps {
   className?: string
 }
 
 function AdBanner({ className = '' }: AdBannerProps) {
+  const sponsorUrl = 'https://k1037.com/radiobingo/'
+  const sponsorLogo = '/sponsor-k1037.jpg'
+
   return (
-    <div className={`w-full ${className}`}>
-      <div className="
-        bg-slate-800/80
-        border border-slate-600
-        rounded-xl
-        px-4 py-3
-        flex items-center justify-center
-        min-h-[60px]
-        relative
-        overflow-hidden
-      ">
-        {/* Etiquette discrete "Publicite" */}
-        <span className="
-          absolute top-1 right-2
-          text-slate-500 text-xs
-          font-mono uppercase tracking-wider
-        ">
+    <a href={sponsorUrl} target="_blank" rel="noopener noreferrer" title="Visitez K103.7 Radio Bingo" className={`block w-full group ${className}`}>
+      <div className="bg-slate-800/80 border border-slate-600 rounded-xl px-4 py-2 flex items-center justify-center min-h-[64px] relative overflow-hidden transition hover:bg-slate-700/80 hover:border-red-500/50 cursor-pointer">
+        <span className="absolute top-1 right-2 text-slate-500 text-xs font-mono uppercase tracking-wider z-10">
           Publicite
         </span>
-
-        {/* Contenu de la pub (a personnaliser) */}
-        <div className="flex items-center gap-4 text-center">
-          <i className="fa-solid fa-bullhorn text-slate-400 text-xl"></i>
-          <div>
-            <p className="text-slate-300 font-bold text-sm sm:text-base">
-              Votre message publicitaire ici
-            </p>
-            <p className="text-slate-500 text-xs mt-0.5">
-              Commanditaire officiel du D-IA/NE Bingo — Sherbrooke
-            </p>
-          </div>
+        <div className="bg-white rounded-lg px-5 py-2 flex items-center justify-center shadow-md group-hover:scale-[1.03] transition">
+          <img src={sponsorLogo} alt="K103.7 Radio Bingo - Kahnawake" className="h-10 sm:h-12 w-auto object-contain" />
         </div>
+        <i className="fa-solid fa-arrow-up-right-from-square absolute bottom-1 right-2 text-slate-500 text-xs group-hover:text-red-400 transition"></i>
       </div>
-    </div>
+    </a>
   )
 }
 
