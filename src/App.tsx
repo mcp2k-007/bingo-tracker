@@ -14,7 +14,6 @@ import HistoryTicker from './components/HistoryTicker'
 import SaveGameModal from './components/SaveGameModal'
 
 function App() {
-  // Le "cerveau" de la partie (etat + sauvegarde auto)
   const {
     drawnNumbers,
     drawnNumbersRecentFirst,
@@ -27,24 +26,18 @@ function App() {
     getDurationMinutes,
   } = useGameState()
 
-  // Etat du verrou "BINGO" (grille figee quand true)
   const [isLocked, setIsLocked] = useState<boolean>(false)
-
-  // Etat de la modale de sauvegarde (null = fermee)
   const [gameToSave, setGameToSave] = useState<SavedGame | null>(null)
 
-  // Bascule le verrou BINGO
   function toggleBingoLock() {
     setIsLocked((prev) => !prev)
   }
 
-  // Clic sur un numero : ignore si la grille est verrouillee
   function handleToggleNumber(value: number) {
     if (isLocked) return
     toggleNumber(value)
   }
 
-  // Gestion du clic sur "Nouvelle partie" avec confirmation
   function handleNewGame() {
     if (isLocked) {
       window.alert('La grille est verrouillee (BINGO actif). Declenche le verrou pour commencer une nouvelle partie.')
@@ -59,7 +52,6 @@ function App() {
     resetGame()
   }
 
-  // Terminer et sauvegarder la partie (ouvre la modale)
   function handleSaveGame() {
     if (drawnCount === 0) {
       window.alert('Aucune boule n\'a ete tiree. Il n\'y a rien a sauvegarder pour le moment.')
@@ -96,13 +88,9 @@ function App() {
   return (
     <div className="h-screen flex flex-col bg-slate-900 text-slate-100 overflow-hidden">
 
-      {/* ============================================
-          HEADER COMPACT : Titre + Compteurs + Boutons fenetre
-          (les compteurs sont maintenant integres ici)
-          ============================================ */}
+      {/* HEADER COMPACT : Titre + Compteurs + Boutons fenetre */}
       <header className="bg-slate-900 border-b border-slate-800 flex justify-between items-center px-3 py-2 select-none flex-shrink-0 gap-3">
 
-        {/* Gauche : Logo + Titre */}
         <div className="flex items-center gap-2 flex-shrink-0">
           <i className="fa-solid fa-table-cells text-red-500"></i>
           <h1 className="font-display text-base sm:text-lg font-bold tracking-tight text-white whitespace-nowrap">
@@ -113,7 +101,6 @@ function App() {
           </h1>
         </div>
 
-        {/* Centre/Droite : Compteurs */}
         <div className="flex gap-4 sm:gap-6 items-center ml-auto">
           <div className="flex items-center gap-2">
             <span className="text-slate-400 font-semibold text-xs uppercase tracking-wider hidden md:inline">Sortis</span>
@@ -126,7 +113,6 @@ function App() {
           </div>
         </div>
 
-        {/* Boutons de fenetre (decoratifs) */}
         <div className="flex items-center gap-2 flex-shrink-0">
           <button className="w-3.5 h-3.5 rounded-full bg-yellow-500 border border-yellow-600" title="Reduire" />
           <button className="w-3.5 h-3.5 rounded-full bg-green-500 border border-green-600" title="Agrandir" />
@@ -134,13 +120,9 @@ function App() {
         </div>
       </header>
 
-      {/* ============================================
-          BARRE D'ACTION UNIQUE (tout sur une ligne)
-          Boutons compacts + Boule en cours + Bouton BINGO
-          ============================================ */}
+      {/* BARRE D'ACTION UNIQUE : boutons compacts + Boule + BINGO */}
       <div className="flex-shrink-0 px-3 py-2 flex items-center gap-2 sm:gap-3">
 
-        {/* Bouton Nouvelle partie (compact, icone seule + texte au survol sur grand ecran) */}
         <button
           onClick={handleNewGame}
           className="flex-shrink-0 px-3 py-3 bg-slate-700 hover:bg-slate-600 active:scale-95 rounded-xl transition font-semibold flex items-center gap-2"
@@ -150,7 +132,6 @@ function App() {
           <span className="hidden lg:inline text-sm">Nouvelle</span>
         </button>
 
-        {/* Bouton Sauvegarder (compact) */}
         <button
           onClick={handleSaveGame}
           className="flex-shrink-0 px-3 py-3 bg-emerald-600 hover:bg-emerald-500 active:scale-95 rounded-xl transition font-semibold flex items-center gap-2 shadow-md shadow-emerald-500/20"
@@ -160,13 +141,10 @@ function App() {
           <span className="hidden lg:inline text-sm">Sauver</span>
         </button>
 
-        {/* Boule en cours (largeur fixe) */}
         <CurrentBall lastDrawn={lastDrawn} />
 
-        {/* Espaceur flexible : pousse le bouton BINGO a l'extreme droite */}
         <div className="flex-grow"></div>
 
-        {/* Bouton BINGO (extreme droite) */}
         <button
           onClick={toggleBingoLock}
           className={`
@@ -199,7 +177,7 @@ function App() {
         </button>
       </div>
 
-      {/* ZONE PRINCIPALE : LA GRILLE DE BINGO (plus grande maintenant !) */}
+      {/* ZONE PRINCIPALE : LA GRILLE DE BINGO */}
       <main className="flex-grow overflow-hidden px-2 sm:px-3 pb-2 flex flex-col relative">
         {isLocked && (
           <div className="absolute top-1 left-1/2 -translate-x-1/2 z-20 bg-red-600 text-white text-xs sm:text-sm font-bold px-4 py-1.5 rounded-full shadow-lg border border-white/40 flex items-center gap-2 animate-popIn">
@@ -216,4 +194,28 @@ function App() {
         </div>
       </main>
 
-      {/* BANDEAU HISTORIQUE (glissable au doigt) */}
+      {/* BANDEAU HISTORIQUE */}
+      <div className="flex-shrink-0">
+        <HistoryTicker drawnNumbersRecentFirst={drawnNumbersRecentFirst} />
+      </div>
+
+      {/* PIED DE PAGE (FOOTER) */}
+      <footer className="bg-slate-900 border-t border-slate-800 py-1.5 px-3 flex-shrink-0">
+        <p className="text-center text-xs text-slate-500 font-mono tracking-wide">
+          Fabrique et opere par{' '}
+          <span className="text-slate-300 font-bold">Diane Brochu &copy; 2026</span>
+        </p>
+      </footer>
+
+      {/* MODALE DE SAUVEGARDE */}
+      {gameToSave && (
+        <SaveGameModal
+          game={gameToSave}
+          onClose={() => setGameToSave(null)}
+        />
+      )}
+    </div>
+  )
+}
+
+export default App
