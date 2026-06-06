@@ -1,11 +1,13 @@
 // ============================================
-// D-IA/NE BINGO TRACKER v1.1
+// D-IA/NE BINGO TRACKER v1.2
 // Page : Vue Spectateur (/live) - Lecture seule
 // ============================================
 
 import { useRealtimeGame } from '../hooks/useRealtimeGame'
 import { getLetterForNumber, COLUMNS, getNumbersForColumn } from '../lib/bingoLogic'
-import AdBanner from '../components/AdBanner'
+import AdCarousel from '../components/AdCarousel'
+import Footer from '../components/Footer'
+import TerminalClock from '../components/TerminalClock'
 
 function LiveView() {
   const {
@@ -29,9 +31,11 @@ function LiveView() {
       <header className="bg-slate-900 border-b border-slate-800 flex justify-between items-center px-3 py-2 select-none flex-shrink-0">
         <div className="flex items-center gap-2">
           <i className="fa-solid fa-table-cells text-red-500"></i>
-          <h1 className="font-display text-base sm:text-lg font-bold tracking-tight text-white whitespace-nowrap">D-IA/NE BINGO Tracker <span className="text-xs text-red-500 font-normal bg-red-500/10 px-2 py-0.5 rounded-full ml-2">v1.1</span></h1>
+          <h1 className="font-display text-base sm:text-lg font-bold tracking-tight text-white whitespace-nowrap">D&bull;IA&bull;NE BINGO Tracker <span className="text-xs text-red-500 font-normal bg-red-500/10 px-2 py-0.5 rounded-full ml-2">v1.2</span></h1>
         </div>
         <div className="flex items-center gap-3">
+          {/* Horloge style terminal, a GAUCHE du bouton "EN DIRECT" (sans cadre) */}
+          <TerminalClock className="text-red-400 text-sm sm:text-base" />
           <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${isConnected ? 'bg-red-500/20 text-red-400 border border-red-500/40' : 'bg-slate-700 text-slate-400 border border-slate-600'}`}>
             <span className={`w-2 h-2 rounded-full ${isConnected ? 'bg-red-500 animate-pulse' : 'bg-slate-500'}`}></span>
             {isConnected ? 'EN DIRECT' : 'Connexion...'}
@@ -43,7 +47,7 @@ function LiveView() {
       </header>
 
       <div className="flex-shrink-0 px-3 pt-2">
-        <AdBanner />
+        <AdCarousel />
       </div>
 
       {/* BANNIERE VERIFICATION BINGO (visible quand Diane appuie BINGO) */}
@@ -64,18 +68,18 @@ function LiveView() {
         </div>
       )}
 
-      {/* Boule en cours (compact, style iPad) */}
+      {/* Boule en cours (compact). Pulse doux + numero en gras + contour epais. */}
       <div className="flex-shrink-0 px-3 py-2 flex items-center gap-3">
         {lastDrawn === null ? (
-          <div className="flex-shrink-0 bg-slate-800/60 border-4 border-slate-600 rounded-2xl px-6 py-2 flex items-center justify-center gap-3">
+          <div className="ball-waiting flex-shrink-0 bg-slate-800/60 border-[6px] border-slate-600 rounded-2xl px-6 py-2 flex items-center justify-center gap-3">
             <i className="fa-solid fa-circle-notch text-slate-500 text-xl"></i>
-            <span className="font-display text-slate-400 text-lg font-semibold uppercase tracking-wider whitespace-nowrap">En attente...</span>
+            <span className="font-display text-slate-400 text-lg font-bold uppercase tracking-wider whitespace-nowrap">En attente...</span>
           </div>
         ) : (
-          <div className="flex-shrink-0 bg-gradient-to-r from-red-600 to-rose-700 border-4 border-white rounded-2xl px-6 py-2 flex items-center justify-center gap-3 shadow-lg shadow-red-500/30">
+          <div className="ball-waiting flex-shrink-0 bg-gradient-to-r from-red-600 to-rose-700 border-[6px] border-white rounded-2xl px-6 py-2 flex items-center justify-center gap-3 shadow-lg shadow-red-500/30">
             <i className="fa-solid fa-circle-dot text-white/80 text-xl sm:text-2xl"></i>
-            <span className="font-display text-white/80 text-lg font-semibold uppercase tracking-wider whitespace-nowrap">Boule&nbsp;:</span>
-            <span className="font-display text-white text-xl sm:text-2xl font-extrabold tracking-wider uppercase leading-none whitespace-nowrap">{getLetterForNumber(lastDrawn)} - {lastDrawn}</span>
+            <span className="font-display text-white/80 text-lg font-bold uppercase tracking-wider whitespace-nowrap">Boule&nbsp;:</span>
+            <span className="font-display text-white text-xl sm:text-2xl font-black tracking-wider uppercase leading-none whitespace-nowrap">{getLetterForNumber(lastDrawn)} - {lastDrawn}</span>
           </div>
         )}
       </div>
@@ -110,9 +114,7 @@ function LiveView() {
         </div>
       </div>
 
-      <footer className="bg-slate-900 border-t border-slate-800 py-1.5 px-3 flex-shrink-0">
-        <p className="text-center text-xs text-slate-500 font-mono tracking-wide">Fabrique et opere par{' '}<span className="text-slate-300 font-bold">Diane Brochu &copy; 2026</span></p>
-      </footer>
+      <Footer />
     </div>
   )
 }

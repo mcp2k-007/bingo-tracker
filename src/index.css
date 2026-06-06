@@ -100,3 +100,32 @@ button {
   background: #475569;
   border-radius: 2px;
 }
+/* Boule en cours : pulsation lente et douce, en continu */
+@keyframes ball-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.5; }
+}
+.ball-waiting {
+  animation: ball-pulse 1.6s ease-in-out infinite;
+}
+/* Defilement banniere pub : droite -> gauche, vitesse moyenne, boucle continue */
+@keyframes ticker {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.ad-ticker {
+  animation: ticker 30s linear infinite;
+}
+/* Effet de fondu sur les bords (optionnel mais propre) */
+.ad-ticker-mask {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+          mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+}
+/* Boule en cours : pulsation lente et douce, en continu */
+@keyframes ball-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.5; }
+}
+.ball-waiting {
+  animation: ball-pulse 1.6s ease-in-out infinite;
+}

@@ -1,5 +1,5 @@
 // ============================================
-// D-IA/NE BINGO TRACKER v1.1
+// D-IA/NE BINGO TRACKER v1.2
 // Composant principal - Interface operatrice (Diane)
 // ============================================
 
@@ -7,14 +7,14 @@ import { useState } from 'react'
 import { useGameState } from './hooks/useGameState'
 import type { SavedGame } from './lib/exportGame'
 import BingoBoard from './components/BingoBoard'
-import CurrentBall from './components/CurrentBall'
 import HistoryTicker from './components/HistoryTicker'
 import SaveGameModal from './components/SaveGameModal'
+import Footer from './components/Footer'
 
 function App() {
   const {
     drawnNumbers, drawnNumbersRecentFirst, drawnCount, remainingCount,
-    lastDrawn, startedAt, isLocked, bingoElapsed, bingoChecks,
+    startedAt, isLocked, bingoElapsed, bingoChecks,
     toggleNumber, toggleBingoLock, resetGame, getDurationMinutes, formatBingoTimer,
   } = useGameState()
 
@@ -67,7 +67,7 @@ function App() {
       <header className="bg-slate-900 border-b border-slate-800 flex justify-between items-center px-3 py-2 select-none flex-shrink-0 gap-3">
         <div className="flex items-center gap-2 flex-shrink-0">
           <i className="fa-solid fa-table-cells text-red-500"></i>
-          <h1 className="font-display text-base sm:text-lg font-bold tracking-tight text-white whitespace-nowrap">D-IA/NE BINGO Tracker <span className="text-xs text-red-500 font-normal bg-red-500/10 px-2 py-0.5 rounded-full ml-2">v1.1</span></h1>
+          <h1 className="font-display text-base sm:text-lg font-bold tracking-tight text-white whitespace-nowrap">D&bull;IA&bull;NE BINGO Tracker <span className="text-xs text-red-500 font-normal bg-red-500/10 px-2 py-0.5 rounded-full ml-2">v1.2</span></h1>
         </div>
         <div className="flex gap-4 sm:gap-6 items-center ml-auto">
           <div className="flex items-center gap-2">
@@ -96,7 +96,7 @@ function App() {
           <i className="fa-solid fa-floppy-disk text-lg"></i>
           <span className="hidden lg:inline text-sm">Sauver</span>
         </button>
-        <CurrentBall lastDrawn={lastDrawn} />
+        {/* CurrentBall retire en v1.2 : la boule courante reste visible dans l'historique (bas) */}
         <div className="flex-grow"></div>
 
         {/* TIMER BINGO (vert, a gauche du bouton BINGO) */}
@@ -128,9 +128,7 @@ function App() {
         <HistoryTicker drawnNumbersRecentFirst={drawnNumbersRecentFirst} />
       </div>
 
-      <footer className="bg-slate-900 border-t border-slate-800 py-1.5 px-3 flex-shrink-0">
-        <p className="text-center text-xs text-slate-500 font-mono tracking-wide">Fabrique et opere par{' '}<span className="text-slate-300 font-bold">Diane Brochu &copy; 2026</span></p>
-      </footer>
+      <Footer />
 
       {gameToSave && (<SaveGameModal game={gameToSave} onClose={() => setGameToSave(null)} />)}
     </div>
