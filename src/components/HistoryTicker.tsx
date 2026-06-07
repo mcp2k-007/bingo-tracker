@@ -1,9 +1,9 @@
 // ============================================
-// D-IA-NE BINGO TRACKER v1.0
+// D-IA-NE BINGO TRACKER v1.2
 // Composant : Historique des boules tirees
 // ============================================
 // Affiche l'historique des boules en bandeau horizontal FIXE.
-//   - La plus recente est a l'extreme GAUCHE (en rouge)
+//   - La plus recente est a l'extreme GAUCHE (en rouge, pulse doux)
 //   - Chaque nouvelle boule pousse les autres vers la droite
 //   - PAS d'animation automatique : les boules sont statiques
 //   - L'operateur peut GLISSER au doigt pour voir les anciennes
@@ -31,7 +31,7 @@ function HistoryTicker({ drawnNumbersRecentFirst }: HistoryTickerProps) {
           <div className="flex items-center gap-2 w-max">
             {drawnNumbersRecentFirst.map((value, index) => {
               const letter = getLetterForNumber(value)
-              // La premiere boule (index 0) = la plus recente : mise en valeur (rouge)
+              // La premiere boule (index 0) = la plus recente : mise en valeur (rouge) + pulse doux
               const isMostRecent = index === 0
 
               return (
@@ -46,7 +46,7 @@ function HistoryTicker({ drawnNumbersRecentFirst }: HistoryTickerProps) {
                     flex-shrink-0
                     ${
                       isMostRecent
-                        ? 'bg-red-600 text-white border-2 border-white/40 shadow-md shadow-red-500/40'
+                        ? 'ball-waiting bg-red-600 text-white border-2 border-white/40 shadow-md shadow-red-500/40'
                         : 'bg-slate-800 text-slate-200 border border-slate-700'
                     }
                   `}

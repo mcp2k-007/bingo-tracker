@@ -1,5 +1,5 @@
 // ============================================
-// D-IA/NE BINGO TRACKER v1.1
+// D-IA/NE BINGO TRACKER v1.2
 // Logique d'exportation d'une partie sauvegardee
 // ============================================
 // Genere deux fichiers telechargeables :
@@ -165,8 +165,9 @@ function buildTextContent(game: SavedGame): string {
   const bingoCard = buildVerticalBingoCard(game.drawnNumbers)
   const bingoChecksSection = buildBingoChecksSection(game.bingoChecks)
 
+  // Nom de l'app : \u2022 = point "•" (source ASCII, rendu UTF-8 dans le .txt)
   return `============================================
-   D-IA/NE BINGO TRACKER v1.1
+   D\u2022IA\u2022NE BINGO Tracker v1.2
    LIST OUTPUT
 ============================================
 
@@ -198,7 +199,7 @@ ${bingoCard}
 
 ============================================
    Logiciel Fabrique et Opere par:
-   Diane Brochu, Sherbrooke (c) 2026
+   Diane Brochu et Paskal Brochu (c) 2026
 ============================================
 `
 }

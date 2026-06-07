@@ -52,9 +52,24 @@ const ADS: Ad[] = [
     text: "Votre Logo ICI - Contactez Paskal a paskal.brochu@gmail.com",
     isPlaceholder: true,
   },
+  {
+    id: "gabarit-4",
+    alt: "Espace publicitaire disponible",
+    href: "mailto:paskal.brochu@gmail.com",
+    text: "Votre Logo ICI - Contactez Paskal a paskal.brochu@gmail.com",
+    isPlaceholder: true,
+  },
+  {
+    id: "gabarit-5",
+    alt: "Espace publicitaire disponible",
+    href: "mailto:paskal.brochu@gmail.com",
+    text: "Votre Logo ICI - Contactez Paskal a paskal.brochu@gmail.com",
+    isPlaceholder: true,
+  },
 ];
 
 // Rendu d'une seule carte publicitaire (logo ou gabarit texte).
+// Dimensions UNIFORMES (w-56 h-16) pour toutes les cartes, logo comme gabarit.
 function AdCard({ ad }: { ad: Ad }) {
   return (
     <a
@@ -63,14 +78,14 @@ function AdCard({ ad }: { ad: Ad }) {
       rel="noopener noreferrer"
       title={ad.alt}
       className={
-        "flex items-center justify-center shrink-0 h-12 px-3 mx-2 rounded-lg transition-transform hover:scale-[1.03] " +
+        "flex items-center justify-center shrink-0 w-56 h-16 px-3 mx-2 rounded-lg overflow-hidden transition-transform hover:scale-[1.03] " +
         (ad.isPlaceholder
-          ? "border border-dashed border-slate-500/70 text-[11px] text-slate-300 bg-slate-800/40 max-w-[260px] text-center leading-tight"
-          : "bg-white/5")
+          ? "border border-dashed border-slate-500/70 text-[11px] text-slate-300 bg-slate-800/40 text-center leading-tight"
+          : "bg-white")
       }
     >
       {ad.imageSrc ? (
-        <img src={ad.imageSrc} alt={ad.alt} className="h-10 w-auto object-contain" />
+        <img src={ad.imageSrc} alt={ad.alt} className="max-h-12 w-auto object-contain" />
       ) : (
         <span>{ad.text}</span>
       )}

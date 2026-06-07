@@ -1,5 +1,5 @@
 /* ============================================
-   D-IA-NE BINGO TRACKER v1.0
+   D-IA-NE BINGO TRACKER v1.2
    Styles globaux de l'application
    ============================================ */
 
@@ -16,7 +16,6 @@
 /* ============================================
    STYLES DE BASE (body et html)
    ============================================ */
-
 html, body {
   margin: 0;
   padding: 0;
@@ -43,20 +42,16 @@ button {
    BARRE DE DEFILEMENT PERSONNALISEE
    (identique au prototype HTML)
    ============================================ */
-
 ::-webkit-scrollbar {
   width: 8px;
 }
-
 ::-webkit-scrollbar-track {
   background: #1e293b;
 }
-
 ::-webkit-scrollbar-thumb {
   background: #475569;
   border-radius: 4px;
 }
-
 ::-webkit-scrollbar-thumb:hover {
   background: #64748b;
 }
@@ -65,7 +60,6 @@ button {
    ANIMATION : Apparition d'un numero tire
    Utilisee par la "Boule en cours" et autres elements
    ============================================ */
-
 @keyframes popIn {
   0% {
     transform: scale(0.9);
@@ -80,27 +74,26 @@ button {
    L'operateur fait defiler au doigt (pas d'animation auto).
    Les boules restent fixes ; la plus recente est a gauche.
    ============================================ */
-
 .history-scroll {
   /* Defilement horizontal fluide au doigt (tactile) */
   -webkit-overflow-scrolling: touch;
   scroll-behavior: smooth;
 }
-
 /* Barre de defilement discrete (visible mais fine) */
 .history-scroll::-webkit-scrollbar {
   height: 4px;
 }
-
 .history-scroll::-webkit-scrollbar-track {
   background: transparent;
 }
-
 .history-scroll::-webkit-scrollbar-thumb {
   background: #475569;
   border-radius: 2px;
 }
-/* Boule en cours : pulsation lente et douce, en continu */
+
+/* ============================================
+   BOULE EN COURS : pulsation lente et douce, en continu
+   ============================================ */
 @keyframes ball-pulse {
   0%, 100% { opacity: 1; }
   50%      { opacity: 0.5; }
@@ -108,7 +101,11 @@ button {
 .ball-waiting {
   animation: ball-pulse 1.6s ease-in-out infinite;
 }
-/* Defilement banniere pub : droite -> gauche, vitesse moyenne, boucle continue */
+
+/* ============================================
+   BANNIERE PUB : defilement droite -> gauche, boucle continue
+   (s'active seulement si > 4 pubs, gere dans AdCarousel.tsx)
+   ============================================ */
 @keyframes ticker {
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }
@@ -120,12 +117,4 @@ button {
 .ad-ticker-mask {
   -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
           mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
-}
-/* Boule en cours : pulsation lente et douce, en continu */
-@keyframes ball-pulse {
-  0%, 100% { opacity: 1; }
-  50%      { opacity: 0.5; }
-}
-.ball-waiting {
-  animation: ball-pulse 1.6s ease-in-out infinite;
 }

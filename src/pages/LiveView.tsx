@@ -12,7 +12,7 @@ import TerminalClock from '../components/TerminalClock'
 function LiveView() {
   const {
     drawnNumbers, drawnNumbersRecentFirst, drawnCount, remainingCount,
-    lastDrawn, bingoActive, bingoElapsed, isConnected, isLoading, formatBingoTimer,
+    bingoActive, bingoElapsed, isConnected, isLoading, formatBingoTimer,
   } = useRealtimeGame()
 
   if (isLoading) {
@@ -68,21 +68,8 @@ function LiveView() {
         </div>
       )}
 
-      {/* Boule en cours (compact). Pulse doux + numero en gras + contour epais. */}
-      <div className="flex-shrink-0 px-3 py-2 flex items-center gap-3">
-        {lastDrawn === null ? (
-          <div className="ball-waiting flex-shrink-0 bg-slate-800/60 border-[6px] border-slate-600 rounded-2xl px-6 py-2 flex items-center justify-center gap-3">
-            <i className="fa-solid fa-circle-notch text-slate-500 text-xl"></i>
-            <span className="font-display text-slate-400 text-lg font-bold uppercase tracking-wider whitespace-nowrap">En attente...</span>
-          </div>
-        ) : (
-          <div className="ball-waiting flex-shrink-0 bg-gradient-to-r from-red-600 to-rose-700 border-[6px] border-white rounded-2xl px-6 py-2 flex items-center justify-center gap-3 shadow-lg shadow-red-500/30">
-            <i className="fa-solid fa-circle-dot text-white/80 text-xl sm:text-2xl"></i>
-            <span className="font-display text-white/80 text-lg font-bold uppercase tracking-wider whitespace-nowrap">Boule&nbsp;:</span>
-            <span className="font-display text-white text-xl sm:text-2xl font-black tracking-wider uppercase leading-none whitespace-nowrap">{getLetterForNumber(lastDrawn)} - {lastDrawn}</span>
-          </div>
-        )}
-      </div>
+      {/* Boule en cours retiree en v1.2 : la boule courante est la plus recente
+          de l'historique (en bas), qui pulse doucement (voir plus bas). */}
 
       {/* Grille BINGO (lecture seule) */}
       <main className="flex-grow overflow-hidden px-2 sm:px-3 pb-2 flex flex-col">
@@ -95,7 +82,7 @@ function LiveView() {
               const numbers = getNumbersForColumn(column.letter)
               const value = numbers[rowIndex]
               const isDrawn = drawnNumbers.includes(value)
-              return (<div key={value} className={`w-full h-full flex items-center justify-center rounded-sm sm:rounded-md font-bold border border-black sm:border-2 leading-none text-[clamp(0.65rem,1.8vh,1.4rem)] select-none cursor-default ${isDrawn ? 'bg-gray-300 text-gray-700 shadow-inner' : 'bg-white text-black'}`}>{value}</div>)
+              return (<div key={value} className={`w-full h-full flex items-center justify-center rounded-sm sm:rounded-md font-bold border border-black sm:border-2 leading-none text-[clamp(0.65rem,1.8vh,1.4rem)] select-none cursor-default ${isDrawn ? 'bg-blue-700 text-white shadow-inner' : 'bg-white text-black'}`}>{value}</div>)
             }))}
           </div>
         </div>
@@ -108,7 +95,7 @@ function LiveView() {
             <span className="text-slate-500 text-sm font-mono italic whitespace-nowrap">Aucune boule tiree pour l'instant.</span>
           ) : (
             <div className="flex items-center gap-2 w-max">
-              {drawnNumbersRecentFirst.map((value, index) => (<span key={value} className={`inline-flex items-center justify-center px-3 py-1 rounded-lg font-mono font-bold text-sm sm:text-base whitespace-nowrap flex-shrink-0 ${index === 0 ? 'bg-red-600 text-white border-2 border-white/40 shadow-md' : 'bg-slate-800 text-slate-200 border border-slate-700'}`}>{getLetterForNumber(value)}-{value}</span>))}
+              {drawnNumbersRecentFirst.map((value, index) => (<span key={value} className={`inline-flex items-center justify-center px-3 py-1 rounded-lg font-mono font-bold text-sm sm:text-base whitespace-nowrap flex-shrink-0 ${index === 0 ? 'ball-waiting bg-red-600 text-white border-2 border-white/40 shadow-md' : 'bg-slate-800 text-slate-200 border border-slate-700'}`}>{getLetterForNumber(value)}-{value}</span>))}
             </div>
           )}
         </div>
