@@ -110,11 +110,7 @@ button {
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }
 }
-.ad-ticker {
-  animation: ticker 30s linear infinite;
-}
-/* Effet de fondu sur les bords (optionnel mais propre) */
-.ad-ticker-mask {
-  -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
-          mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+/* Nom NEUTRE (pas de "ad") pour ne pas etre cache par les bloqueurs de pub */
+.mq-track {
+  animation: ticker 45s linear infinite;
 }

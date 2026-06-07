@@ -1,127 +1,103 @@
 // AdCarousel.tsx
-// Banniere publicitaire intelligente.
-// - Tant que le nombre de pubs <= SCROLL_THRESHOLD : affichage STATIQUE (centre).
-// - Des que le nombre de pubs > SCROLL_THRESHOLD : defilement automatique
-//   droite -> gauche (vitesse moyenne), boucle continue sans coupure.
-// - 3 gabarits "Votre Logo ICI" sont inclus par defaut pour demarcher les annonceurs.
+// Banniere de commanditaires (defilante).
 //
-// Remplace l'ancien AdBanner.tsx. La pub commanditaire reelle (K103.7) est conservee
-// en premiere position ; ajoute/retire simplement des entrees dans le tableau ADS.
+// !!! IMPORTANT - BLOQUEURS DE PUB !!!
+// On EVITE tout nom de classe/id contenant "ad", "ads", "banner", "sponsor",
+// car uBlock/AdGuard cachent ces elements automatiquement (filtres cosmetiques).
+// -> classe d'animation NEUTRE : "mq-track" (definie dans index.css).
+//
+// - <= SCROLL_THRESHOLD panneaux : affichage STATIQUE centre.
+// - >  SCROLL_THRESHOLD panneaux : defilement auto droite -> gauche, boucle continue.
 
-// Seuil de declenchement du defilement : on scrolle uniquement si on depasse 4 pubs.
 const SCROLL_THRESHOLD = 4;
 
-type Ad = {
-  id: string;
-  // Si imageSrc est fourni : on affiche le logo. Sinon : on affiche le texte (gabarit).
-  imageSrc?: string;
-  alt: string;
-  href: string;       // lien au clic (site annonceur OU mailto pour les gabarits)
-  text?: string;      // texte affiche pour les gabarits sans logo
-  isPlaceholder?: boolean;
-};
+// Texte du commanditaire CIGN-FM, decoupe en lignes lisibles
+// (sans accents pour rester coherent avec le reste de l'app)
+const CIGN_LINE1 = "Commanditez une boule du Radio-Bingo de CIGN-FM";
+const CIGN_LINE2 = "M. Luc Frechette, conseiller aux ventes";
+const CIGN_PHONE = "819 804-0967";
 
-// ------- CONFIGURATION DES PUBLICITES -------
-// 1 pub reelle (commanditaire) + 3 gabarits = 4 entrees => reste STATIQUE.
-// Ajoute une 5e entree et le carrousel se met a defiler automatiquement.
-const ADS: Ad[] = [
-  {
-    id: "k1037",
-    imageSrc: "/sponsor-k1037.jpg", // fichier en minuscules (Vercel = Linux, casse sensible)
-    alt: "Commanditaire K103.7 Radio Bingo",
-    href: "https://k1037.com/radiobingo",
-  },
-  {
-    id: "gabarit-1",
-    alt: "Espace publicitaire disponible",
-    href: "mailto:paskal.brochu@gmail.com",
-    text: "Votre Logo ICI - Contactez Paskal a paskal.brochu@gmail.com",
-    isPlaceholder: true,
-  },
-  {
-    id: "gabarit-2",
-    alt: "Espace publicitaire disponible",
-    href: "mailto:paskal.brochu@gmail.com",
-    text: "Votre Logo ICI - Contactez Paskal a paskal.brochu@gmail.com",
-    isPlaceholder: true,
-  },
-  {
-    id: "gabarit-3",
-    alt: "Espace publicitaire disponible",
-    href: "mailto:paskal.brochu@gmail.com",
-    text: "Votre Logo ICI - Contactez Paskal a paskal.brochu@gmail.com",
-    isPlaceholder: true,
-  },
-  {
-    id: "gabarit-4",
-    alt: "Espace publicitaire disponible",
-    href: "mailto:paskal.brochu@gmail.com",
-    text: "Votre Logo ICI - Contactez Paskal a paskal.brochu@gmail.com",
-    isPlaceholder: true,
-  },
-  {
-    id: "gabarit-5",
-    alt: "Espace publicitaire disponible",
-    href: "mailto:paskal.brochu@gmail.com",
-    text: "Votre Logo ICI - Contactez Paskal a paskal.brochu@gmail.com",
-    isPlaceholder: true,
-  },
+type Promo =
+  | { id: string; kind: "logo"; imageSrc: string; alt: string; href: string }
+  | { id: string; kind: "placeholder"; text: string; alt: string; href: string }
+  | { id: string; kind: "cign"; logoSrc: string; alt: string; href: string };
+
+// 8 panneaux : 1 K103.7 + 5 gabarits libres + 2 CIGN-FM (melanges au hasard).
+const PROMOS: Promo[] = [
+  { id: "k1037", kind: "logo", imageSrc: "/sponsor-k1037.jpg", alt: "K103.7 Radio Bingo", href: "https://k1037.com/radiobingo/" },
+  { id: "libre-1", kind: "placeholder", text: "Votre Logo ICI - Contactez Paskal a paskal.brochu@gmail.com", alt: "Espace publicitaire disponible", href: "mailto:paskal.brochu@gmail.com" },
+  { id: "cign-1", kind: "cign", logoSrc: "/cign-fm-967.png", alt: "CIGN-FM 96.7 Radio-Bingo", href: "tel:+18198040967" },
+  { id: "libre-2", kind: "placeholder", text: "Votre Logo ICI - Contactez Paskal a paskal.brochu@gmail.com", alt: "Espace publicitaire disponible", href: "mailto:paskal.brochu@gmail.com" },
+  { id: "libre-3", kind: "placeholder", text: "Votre Logo ICI - Contactez Paskal a paskal.brochu@gmail.com", alt: "Espace publicitaire disponible", href: "mailto:paskal.brochu@gmail.com" },
+  { id: "cign-2", kind: "cign", logoSrc: "/cign-fm-967.png", alt: "CIGN-FM 96.7 Radio-Bingo", href: "tel:+18198040967" },
+  { id: "libre-4", kind: "placeholder", text: "Votre Logo ICI - Contactez Paskal a paskal.brochu@gmail.com", alt: "Espace publicitaire disponible", href: "mailto:paskal.brochu@gmail.com" },
+  { id: "libre-5", kind: "placeholder", text: "Votre Logo ICI - Contactez Paskal a paskal.brochu@gmail.com", alt: "Espace publicitaire disponible", href: "mailto:paskal.brochu@gmail.com" },
 ];
 
-// Rendu d'une seule carte publicitaire (logo ou gabarit texte).
-// Dimensions UNIFORMES (w-56 h-16) pour toutes les cartes, logo comme gabarit.
-function AdCard({ ad }: { ad: Ad }) {
+// Hauteur uniforme (h-24) pour tous. Largeur : standard (w-72), CIGN plus large (w-96)
+// pour laisser respirer le texte du commanditaire.
+function PromoCard({ promo }: { promo: Promo }) {
+  const base =
+    "flex items-center justify-center shrink-0 h-24 px-3 mx-2 rounded-lg overflow-hidden transition-transform hover:scale-[1.02]";
+
+  if (promo.kind === "logo") {
+    return (
+      <a href={promo.href} target="_blank" rel="noopener noreferrer" title={promo.alt} className={base + " w-72 bg-white"}>
+        <img src={promo.imageSrc} alt={promo.alt} className="max-h-16 w-auto object-contain" />
+      </a>
+    );
+  }
+
+  if (promo.kind === "cign") {
+    return (
+      <a href={promo.href} title={promo.alt} className={base + " w-96 bg-white"}>
+        <div className="flex flex-col items-center justify-center gap-0.5 w-full h-full text-center px-3 font-sans">
+          <img src={promo.logoSrc} alt={promo.alt} className="h-7 w-auto object-contain mb-0.5" />
+          <span className="text-[11px] leading-snug font-bold text-black">{CIGN_LINE1}</span>
+          <span className="text-[11px] leading-snug text-slate-800">{CIGN_LINE2}</span>
+          <span className="text-base font-black tracking-wide text-black">{CIGN_PHONE}</span>
+        </div>
+      </a>
+    );
+  }
+
+  // placeholder (gabarit "Votre Logo ICI")
   return (
     <a
-      href={ad.href}
-      target={ad.isPlaceholder ? "_self" : "_blank"}
-      rel="noopener noreferrer"
-      title={ad.alt}
-      className={
-        "flex items-center justify-center shrink-0 w-56 h-16 px-3 mx-2 rounded-lg overflow-hidden transition-transform hover:scale-[1.03] " +
-        (ad.isPlaceholder
-          ? "border border-dashed border-slate-500/70 text-[11px] text-slate-300 bg-slate-800/40 text-center leading-tight"
-          : "bg-white")
-      }
+      href={promo.href}
+      title={promo.alt}
+      className={base + " w-72 border border-dashed border-slate-500/70 bg-slate-800/40 text-[11px] text-slate-300 text-center leading-tight"}
     >
-      {ad.imageSrc ? (
-        <img src={ad.imageSrc} alt={ad.alt} className="max-h-12 w-auto object-contain" />
-      ) : (
-        <span>{ad.text}</span>
-      )}
+      <span>{promo.text}</span>
     </a>
   );
 }
 
 export default function AdCarousel() {
-  const shouldScroll = ADS.length > SCROLL_THRESHOLD;
+  const shouldScroll = PROMOS.length > SCROLL_THRESHOLD;
 
-  // Mode STATIQUE : on centre les pubs, pas d'animation.
-  if (!shouldScroll) {
-    return (
-      <div className="w-full overflow-hidden">
-        <div className="flex items-center justify-center flex-wrap gap-1 py-1">
-          {ADS.map((ad) => (
-            <AdCard key={ad.id} ad={ad} />
+  // Conteneur a HAUTEUR FIXE : la bande ne peut jamais collapser.
+  return (
+    <div className="w-full h-28 overflow-hidden flex items-center">
+      {shouldScroll ? (
+        // Defilement : liste dupliquee pour une boucle continue sans trou.
+        // .mq-track est defini dans index.css (@keyframes ticker, droite -> gauche).
+        <div className="mq-track flex items-center w-max">
+          {PROMOS.map((p) => (
+            <PromoCard key={`a-${p.id}`} promo={p} />
+          ))}
+          {PROMOS.map((p) => (
+            <PromoCard key={`b-${p.id}`} promo={p} />
           ))}
         </div>
-      </div>
-    );
-  }
-
-  // Mode DEFILANT : on duplique la liste pour une boucle continue sans trou.
-  // La classe "ad-ticker" est definie dans index.css (@keyframes ticker).
-  return (
-    <div className="w-full overflow-hidden ad-ticker-mask">
-      <div className="ad-ticker flex items-center w-max">
-        {ADS.map((ad) => (
-          <AdCard key={`a-${ad.id}`} ad={ad} />
-        ))}
-        {/* copie pour la boucle infinie */}
-        {ADS.map((ad) => (
-          <AdCard key={`b-${ad.id}`} ad={ad} />
-        ))}
-      </div>
+      ) : (
+        // Statique : panneaux centres, sans animation.
+        <div className="flex items-center justify-center flex-wrap gap-1 w-full">
+          {PROMOS.map((p) => (
+            <PromoCard key={p.id} promo={p} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

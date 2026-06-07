@@ -12,7 +12,7 @@ import TerminalClock from '../components/TerminalClock'
 function LiveView() {
   const {
     drawnNumbers, drawnNumbersRecentFirst, drawnCount, remainingCount,
-    bingoActive, bingoElapsed, isConnected, isLoading, formatBingoTimer,
+    lastDrawn, bingoActive, bingoElapsed, isConnected, isLoading, formatBingoTimer,
   } = useRealtimeGame()
 
   if (isLoading) {
@@ -34,6 +34,11 @@ function LiveView() {
           <h1 className="font-display text-base sm:text-lg font-bold tracking-tight text-white whitespace-nowrap">D&bull;IA&bull;NE BINGO Tracker <span className="text-xs text-red-500 font-normal bg-red-500/10 px-2 py-0.5 rounded-full ml-2">v1.2</span></h1>
         </div>
         <div className="flex items-center gap-3">
+          {/* BOULE EN COURS (principale) - a GAUCHE de l'horloge. Identique a la
+              replique de l'historique : rouge foncE, typo blanche grasse, flash moyen. */}
+          <div className="ball-waiting flex items-center justify-center px-3 py-1 rounded-lg font-mono font-bold text-sm sm:text-base bg-red-700 text-white border-2 border-white/40 shadow-md whitespace-nowrap leading-none">
+            {lastDrawn !== null ? `${getLetterForNumber(lastDrawn)}-${lastDrawn}` : '--'}
+          </div>
           {/* Horloge style terminal, a GAUCHE du bouton "EN DIRECT" (sans cadre) */}
           <TerminalClock className="text-red-400 text-sm sm:text-base" />
           <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${isConnected ? 'bg-red-500/20 text-red-400 border border-red-500/40' : 'bg-slate-700 text-slate-400 border border-slate-600'}`}>
@@ -95,7 +100,7 @@ function LiveView() {
             <span className="text-slate-500 text-sm font-mono italic whitespace-nowrap">Aucune boule tiree pour l'instant.</span>
           ) : (
             <div className="flex items-center gap-2 w-max">
-              {drawnNumbersRecentFirst.map((value, index) => (<span key={value} className={`inline-flex items-center justify-center px-3 py-1 rounded-lg font-mono font-bold text-sm sm:text-base whitespace-nowrap flex-shrink-0 ${index === 0 ? 'ball-waiting bg-red-600 text-white border-2 border-white/40 shadow-md' : 'bg-slate-800 text-slate-200 border border-slate-700'}`}>{getLetterForNumber(value)}-{value}</span>))}
+              {drawnNumbersRecentFirst.map((value, index) => (<span key={value} className={`inline-flex items-center justify-center px-3 py-1 rounded-lg font-mono font-bold text-sm sm:text-base whitespace-nowrap flex-shrink-0 ${index === 0 ? 'ball-waiting bg-red-700 text-white border-2 border-white/40 shadow-md' : 'bg-slate-800 text-slate-200 border border-slate-700'}`}>{getLetterForNumber(value)}-{value}</span>))}
             </div>
           )}
         </div>
