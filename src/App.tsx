@@ -1,5 +1,5 @@
 // ============================================
-// D-IA/NE BINGO TRACKER v1.2
+// D-IA-NE BINGO Tracker v1.2
 // Composant principal - Interface operatrice (Diane)
 // ============================================
 
@@ -10,6 +10,9 @@ import BingoBoard from './components/BingoBoard'
 import HistoryTicker from './components/HistoryTicker'
 import SaveGameModal from './components/SaveGameModal'
 import Footer from './components/Footer'
+import TerminalClock from './components/TerminalClock'
+import { useLiveRadio } from './hooks/useLiveRadio'
+import { useLiveAudience } from './hooks/useLiveAudience'
 
 function App() {
   const {
@@ -17,6 +20,12 @@ function App() {
     startedAt, isLocked, bingoElapsed, bingoChecks,
     toggleNumber, toggleBingoLock, resetGame, getDurationMinutes, formatBingoTimer,
   } = useGameState()
+
+  // Audio en direct CIGN-FM 96.7 (bouton EN DIRECT / effet ON AIR), comme sur /live
+  const radio = useLiveRadio()
+
+  // Audience en direct : compte les spectateurs sur /live (Diane observe seulement)
+  const { count: liveAudience } = useLiveAudience(false)
 
   const [gameToSave, setGameToSave] = useState<SavedGame | null>(null)
 
@@ -64,12 +73,42 @@ function App() {
 
   return (
     <div className="h-screen flex flex-col bg-slate-900 text-slate-100 overflow-hidden">
-      <header className="bg-slate-900 border-b border-slate-800 flex justify-between items-center px-3 py-2 select-none flex-shrink-0 gap-3">
+      <header className="bg-slate-900 border-b border-slate-800 flex justify-between items-center px-3 py-2 select-none flex-shrink-0 gap-3 relative">
         <div className="flex items-center gap-2 flex-shrink-0">
           <i className="fa-solid fa-table-cells text-red-500"></i>
           <h1 className="font-display text-base sm:text-lg font-bold tracking-tight text-white whitespace-nowrap">D&bull;IA&bull;NE BINGO Tracker <span className="text-xs text-red-500 font-normal bg-red-500/10 px-2 py-0.5 rounded-full ml-2">v1.2</span></h1>
         </div>
-        <div className="flex gap-4 sm:gap-6 items-center ml-auto">
+
+        {/* AUDIENCES EN DIRECT (centre du header) : compte des spectateurs /live en
+            temps reel + raccourci vers la page spectateurs. */}
+        <a
+          href="/live"
+          target="_blank"
+          rel="noopener noreferrer"
+          title="Voir la page spectateurs (/live)"
+          className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-2 px-3 py-1 rounded-full bg-slate-800/70 border border-slate-700 hover:bg-slate-700/70 transition"
+        >
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span className="text-[11px] font-semibold text-slate-300 uppercase tracking-wider">Audiences en direct</span>
+          <span className="text-sm font-extrabold text-emerald-400 tabular-nums leading-none">{liveAudience}</span>
+        </a>
+
+        <div className="flex gap-3 sm:gap-4 items-center ml-auto">
+          {/* Horloge + bouton EN DIRECT (audio CIGN-FM 96.7), comme sur /live */}
+          <TerminalClock className="text-red-400 text-sm sm:text-base" />
+          <button
+            onClick={radio.toggle}
+            title={radio.isPlaying ? "Couper l'audio CIGN-FM 96.7" : "Ecouter CIGN-FM 96.7 en direct"}
+            className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-200 select-none ${
+              radio.isPlaying
+                ? 'bg-red-600 text-white border border-red-300 ring-2 ring-red-400/60 shadow-[0_0_14px_3px_rgba(239,68,68,0.75)] scale-95'
+                : 'bg-slate-700 text-slate-400 border border-slate-600 shadow-inner hover:bg-slate-600 active:scale-95'
+            }`}
+          >
+            <span className={`w-2 h-2 rounded-full ${radio.isPlaying ? 'bg-white animate-pulse' : 'bg-slate-500'}`}></span>
+            EN DIRECT
+          </button>
+          <div className="w-px h-5 bg-slate-700"></div>
           <div className="flex items-center gap-2">
             <span className="text-slate-400 font-semibold text-xs uppercase tracking-wider hidden md:inline">Sortis</span>
             <span className="text-xl sm:text-2xl font-extrabold text-red-500 leading-none">{drawnCount}</span>

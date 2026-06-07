@@ -6,14 +6,11 @@
 import { useEffect, useRef, useState } from "react";
 
 // ============================================================================
-// FLUX CIGN-FM 96.7 (mount trouve dans la console : cignfm128.mp3 sur StatsRadio).
-// !!! A VALIDER : le SCHEMA exact (http/https) et un eventuel PORT.
-// CONTRAINTE CLE : notre app est en HTTPS (Vercel). Le navigateur BLOQUE
-// l'audio HTTP sur une page HTTPS (contenu mixte). Il NOUS FAUT une URL https://.
-//   - Si la version https ci-dessous joue -> parfait.
-//   - Si elle refuse (flux http-only) -> on passera par un proxy Vercel en v1.3.
-// Verifier dans DevTools (Network -> cignfm128.mp3 -> Headers -> Request URL).
-const RADIO_STREAM_URL = "https://stream06.ustream.ca/cignfm128.mp3";
+// FLUX CIGN-FM 96.7 - URL CONFIRMEE depuis le code source du lecteur (playerb.php) :
+//   var stream = { mp3: "https://arcq.streamb.live/SB00259" }
+// C'est du HTTPS natif (plateforme ARCQ / StreamB) -> AUCUN proxy necessaire,
+// aucun probleme de contenu mixte. Lecture directe par <audio>.
+const RADIO_STREAM_URL = "https://arcq.streamb.live/SB00259";
 // ============================================================================
 
 export function useLiveRadio() {
@@ -57,11 +54,18 @@ export function useLiveRadio() {
 
     if (isPlaying) {
       audio.pause();
+      setIsPlaying(false);
     } else {
-      // play() renvoie une promesse qui peut etre rejetee (autoplay bloque, etc.)
+      // Allumage OPTIMISTE : le bouton s'allume tout de suite au clic.
+      setHasError(false);
+      setIsPlaying(true);
+      // play() renvoie une promesse qui peut etre rejetee (autoplay bloque, flux indispo...)
       const p = audio.play();
       if (p !== undefined) {
-        p.catch(() => setHasError(true));
+        p.catch(() => {
+          setHasError(true);
+          setIsPlaying(false);
+        });
       }
     }
   };

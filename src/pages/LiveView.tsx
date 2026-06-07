@@ -1,5 +1,5 @@
 // ============================================
-// D-IA/NE BINGO TRACKER v1.2
+// D-IA-NE BINGO Tracker v1.2
 // Page : Vue Spectateur (/live) - Lecture seule
 // ============================================
 
@@ -8,12 +8,20 @@ import { getLetterForNumber, COLUMNS, getNumbersForColumn } from '../lib/bingoLo
 import AdCarousel from '../components/AdCarousel'
 import Footer from '../components/Footer'
 import TerminalClock from '../components/TerminalClock'
+import { useLiveRadio } from '../hooks/useLiveRadio'
+import { useLiveAudience } from '../hooks/useLiveAudience'
 
 function LiveView() {
   const {
     drawnNumbers, drawnNumbersRecentFirst, drawnCount, remainingCount,
     lastDrawn, bingoActive, bingoElapsed, isConnected, isLoading, formatBingoTimer,
   } = useRealtimeGame()
+
+  // Audio en direct CIGN-FM 96.7 (bouton EN DIRECT / effet ON AIR)
+  const radio = useLiveRadio()
+
+  // Presence : ce spectateur compte dans "Audiences en Direct" (vu cote Diane)
+  useLiveAudience(true)
 
   if (isLoading) {
     return (
@@ -34,6 +42,8 @@ function LiveView() {
           <h1 className="font-display text-base sm:text-lg font-bold tracking-tight text-white whitespace-nowrap">D&bull;IA&bull;NE BINGO Tracker <span className="text-xs text-red-500 font-normal bg-red-500/10 px-2 py-0.5 rounded-full ml-2">v1.2</span></h1>
         </div>
         <div className="flex items-center gap-3">
+          {/* Pastille de connexion serveur (donnees en direct) */}
+          <span className={`w-2 h-2 rounded-full flex-shrink-0 ${isConnected ? 'bg-emerald-500 animate-pulse' : 'bg-slate-500'}`} title={isConnected ? 'Donnees en direct (connecte)' : 'Hors connexion'}></span>
           {/* BOULE EN COURS (principale) - a GAUCHE de l'horloge. Identique a la
               replique de l'historique : rouge foncE, typo blanche grasse, flash moyen. */}
           <div className="ball-waiting flex items-center justify-center px-3 py-1 rounded-lg font-mono font-bold text-sm sm:text-base bg-red-700 text-white border-2 border-white/40 shadow-md whitespace-nowrap leading-none">
@@ -41,10 +51,20 @@ function LiveView() {
           </div>
           {/* Horloge style terminal, a GAUCHE du bouton "EN DIRECT" (sans cadre) */}
           <TerminalClock className="text-red-400 text-sm sm:text-base" />
-          <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${isConnected ? 'bg-red-500/20 text-red-400 border border-red-500/40' : 'bg-slate-700 text-slate-400 border border-slate-600'}`}>
-            <span className={`w-2 h-2 rounded-full ${isConnected ? 'bg-red-500 animate-pulse' : 'bg-slate-500'}`}></span>
-            {isConnected ? 'EN DIRECT' : 'Connexion...'}
-          </div>
+          {/* Bouton EN DIRECT = interrupteur audio CIGN-FM 96.7 (effet ON AIR).
+              Allume : rouge neon + enfonce. Eteint : gris mat. */}
+          <button
+            onClick={radio.toggle}
+            title={radio.isPlaying ? "Couper l'audio CIGN-FM 96.7" : "Ecouter CIGN-FM 96.7 en direct"}
+            className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-200 select-none ${
+              radio.isPlaying
+                ? 'bg-red-600 text-white border border-red-300 ring-2 ring-red-400/60 shadow-[0_0_14px_3px_rgba(239,68,68,0.75)] scale-95'
+                : 'bg-slate-700 text-slate-400 border border-slate-600 shadow-inner hover:bg-slate-600 active:scale-95'
+            }`}
+          >
+            <span className={`w-2 h-2 rounded-full ${radio.isPlaying ? 'bg-white animate-pulse' : 'bg-slate-500'}`}></span>
+            EN DIRECT
+          </button>
           <span className="text-xl font-extrabold text-red-500">{drawnCount}</span>
           <div className="w-px h-5 bg-slate-700"></div>
           <span className="text-xl font-extrabold text-slate-200">{remainingCount}</span>
