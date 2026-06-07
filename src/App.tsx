@@ -76,7 +76,7 @@ function App() {
       <header className="bg-slate-900 border-b border-slate-800 flex justify-between items-center px-3 py-2 select-none flex-shrink-0 gap-3 relative">
         <div className="flex items-center gap-2 flex-shrink-0">
           <i className="fa-solid fa-table-cells text-red-500"></i>
-          <h1 className="font-display text-base sm:text-lg font-bold tracking-tight text-white whitespace-nowrap">D&bull;IA&bull;NE BINGO Tracker <span className="text-xs text-red-500 font-normal bg-red-500/10 px-2 py-0.5 rounded-full ml-2">v1.2</span></h1>
+          <h1 className="font-display text-base sm:text-lg font-bold tracking-tight text-white whitespace-nowrap">D&bull;IA&bull;NE Bingo Tracker <span className="text-xs text-red-500 font-normal bg-red-500/10 px-2 py-0.5 rounded-full ml-2">v1.2</span></h1>
         </div>
 
         {/* AUDIENCES EN DIRECT (centre du header) : compte des spectateurs /live en

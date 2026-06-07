@@ -167,7 +167,7 @@ function buildTextContent(game: SavedGame): string {
 
   // Nom de l'app : \u2022 = point "•" (source ASCII, rendu UTF-8 dans le .txt)
   return `============================================
-   D\u2022IA\u2022NE BINGO Tracker v1.2
+   D\u2022IA\u2022NE Bingo Tracker v1.2
    LIST OUTPUT
 ============================================
 
