@@ -1,5 +1,5 @@
 // ============================================
-// D-IA-NE BINGO TRACKER v1.0
+// D•IA•NE Bingo Tracker v1.2
 // Composant : La grille complete de bingo
 // ============================================
 // AUTO-SCALING RESPONSIVE : les 15 rangees se repartissent

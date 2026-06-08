@@ -118,23 +118,27 @@ function App() {
 
           <div className="w-px h-5 bg-slate-700"></div>
 
-          {/* [Boule principale] = la plus recente du tirage (style identique a /live) */}
-          <div className="ball-waiting flex items-center justify-center px-3 py-1 rounded-lg font-mono font-bold text-sm sm:text-base bg-red-700 text-white border-2 border-white/40 shadow-md whitespace-nowrap leading-none">
+          {/* [Boule principale] = la plus recente du tirage (style identique a /live).
+              Infobulle au survol : "Boules en cours". */}
+          <div
+            title="Boules en cours"
+            className="ball-waiting flex items-center justify-center px-3 py-1 rounded-lg font-mono font-bold text-sm sm:text-base bg-red-700 text-white border-2 border-white/40 shadow-md whitespace-nowrap leading-none cursor-default"
+          >
             {lastDrawn !== null ? `${getLetterForNumber(lastDrawn)}-${lastDrawn}` : '--'}
           </div>
 
           <div className="w-px h-5 bg-slate-700"></div>
 
-          {/* [Sortis] */}
-          <div className="flex items-center gap-2">
+          {/* [Sortis] - infobulle : "Nombre de boules tirees" */}
+          <div title="Nombre de boules tirees" className="flex items-center gap-2 cursor-default">
             <span className="text-slate-400 font-semibold text-xs uppercase tracking-wider hidden md:inline">Sortis</span>
             <span className="text-xl sm:text-2xl font-extrabold text-red-500 leading-none">{drawnCount}</span>
           </div>
 
           <div className="w-px h-5 bg-slate-700"></div>
 
-          {/* [Restants] */}
-          <div className="flex items-center gap-2">
+          {/* [Restants] - infobulle : "Nombre de boules restantes" */}
+          <div title="Nombre de boules restantes" className="flex items-center gap-2 cursor-default">
             <span className="text-slate-400 font-semibold text-xs uppercase tracking-wider hidden md:inline">Restants</span>
             <span className="text-xl sm:text-2xl font-extrabold text-slate-200 leading-none">{remainingCount}</span>
           </div>

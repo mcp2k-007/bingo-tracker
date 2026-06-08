@@ -66,17 +66,20 @@ function LiveView() {
             EN DIRECT
           </button>
 
-          {/* [Boule principale] - identique a la replique de l'historique :
-              rouge foncE, typo blanche grasse, flash moyen. */}
-          <div className="ball-waiting flex items-center justify-center px-3 py-1 rounded-lg font-mono font-bold text-sm sm:text-base bg-red-700 text-white border-2 border-white/40 shadow-md whitespace-nowrap leading-none">
+          {/* [Boule principale] - clone exact de celle de l'operatrice (rouge foncE,
+              flash moyen). Infobulle au survol : "Boules en cours". */}
+          <div
+            title="Boules en cours"
+            className="ball-waiting flex items-center justify-center px-3 py-1 rounded-lg font-mono font-bold text-sm sm:text-base bg-red-700 text-white border-2 border-white/40 shadow-md whitespace-nowrap leading-none cursor-default"
+          >
             {lastDrawn !== null ? `${getLetterForNumber(lastDrawn)}-${lastDrawn}` : '--'}
           </div>
 
-          {/* [Sortis] */}
-          <span className="text-xl font-extrabold text-red-500">{drawnCount}</span>
+          {/* [Sortis] - infobulle : "Nombre de boules tirees" */}
+          <span title="Nombre de boules tirees" className="text-xl font-extrabold text-red-500 cursor-default">{drawnCount}</span>
           <div className="w-px h-5 bg-slate-700"></div>
-          {/* [Restants] */}
-          <span className="text-xl font-extrabold text-slate-200">{remainingCount}</span>
+          {/* [Restants] - infobulle : "Nombre de boules restantes" */}
+          <span title="Nombre de boules restantes" className="text-xl font-extrabold text-slate-200 cursor-default">{remainingCount}</span>
         </div>
       </header>
 
@@ -108,8 +111,12 @@ function LiveView() {
       {/* Grille BINGO (lecture seule) */}
       <main className="flex-grow overflow-hidden px-2 sm:px-3 pb-2 flex flex-col">
         <div className="bg-sky-200 rounded-2xl p-1.5 sm:p-2 shadow-2xl border-4 border-sky-300 h-full flex flex-col overflow-hidden">
-          <div className="grid grid-cols-5 gap-1 sm:gap-1.5 flex-shrink-0 mb-1 sm:mb-1.5">
-            {COLUMNS.map((column) => (<div key={column.letter} className="text-center py-0.5 sm:py-1 rounded-lg font-extrabold text-lg sm:text-xl lg:text-2xl tracking-wider bg-blue-700 text-white shadow-md select-none leading-tight">{column.letter}</div>))}
+          {/* En-tete B-I-N-G-O encadre d'un contour NOIR gras (demande #1).
+              Le meme style sera applique sur BingoBoard.tsx (cote iPad). */}
+          <div className="flex-shrink-0 mb-1 sm:mb-1.5 rounded-xl border-2 sm:border-[3px] border-black p-1">
+            <div className="grid grid-cols-5 gap-1 sm:gap-1.5">
+              {COLUMNS.map((column) => (<div key={column.letter} className="text-center py-0.5 sm:py-1 rounded-lg font-extrabold text-lg sm:text-xl lg:text-2xl tracking-wider bg-blue-700 text-white shadow-md select-none leading-tight">{column.letter}</div>))}
+            </div>
           </div>
           <div className="grid grid-cols-5 gap-[2px] sm:gap-1 flex-grow min-h-0" style={{ gridTemplateRows: 'repeat(15, minmax(0, 1fr))' }}>
             {Array.from({ length: 15 }).map((_, rowIndex) => COLUMNS.map((column) => {
@@ -122,14 +129,15 @@ function LiveView() {
         </div>
       </main>
 
-      {/* Historique */}
-      <div className="bg-slate-950 border-t border-slate-800 overflow-hidden flex-shrink-0">
+      {/* Historique - infobulle au survol : "Historique des boules tirees".
+          La boule la plus recente (index 0) affiche plutot "Boules en cours". */}
+      <div title="Historique des boules tirees" className="bg-slate-950 border-t border-slate-800 overflow-hidden flex-shrink-0">
         <div className="overflow-x-auto py-2 px-2">
           {drawnNumbersRecentFirst.length === 0 ? (
             <span className="text-slate-500 text-sm font-mono italic whitespace-nowrap">Aucune boule tiree pour l'instant.</span>
           ) : (
             <div className="flex items-center gap-2 w-max">
-              {drawnNumbersRecentFirst.map((value, index) => (<span key={value} className={`inline-flex items-center justify-center px-3 py-1 rounded-lg font-mono font-bold text-sm sm:text-base whitespace-nowrap flex-shrink-0 ${index === 0 ? 'ball-waiting bg-red-700 text-white border-2 border-white/40 shadow-md' : 'bg-slate-800 text-slate-200 border border-slate-700'}`}>{getLetterForNumber(value)}-{value}</span>))}
+              {drawnNumbersRecentFirst.map((value, index) => (<span key={value} title={index === 0 ? 'Boules en cours' : undefined} className={`inline-flex items-center justify-center px-3 py-1 rounded-lg font-mono font-bold text-sm sm:text-base whitespace-nowrap flex-shrink-0 ${index === 0 ? 'ball-waiting bg-red-700 text-white border-2 border-white/40 shadow-md' : 'bg-slate-800 text-slate-200 border border-slate-700'}`}>{getLetterForNumber(value)}-{value}</span>))}
             </div>
           )}
         </div>
