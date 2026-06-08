@@ -20,7 +20,7 @@ function LiveView() {
   // Audio en direct CIGN-FM 96.7 (bouton EN DIRECT / effet ON AIR)
   const radio = useLiveRadio()
 
-  // Presence : ce spectateur compte dans "Audiences en Direct" (vu cote Diane)
+  // Presence : ce spectateur compte dans "Audiences" (vu cote Diane)
   useLiveAudience(true)
 
   if (isLoading) {
@@ -41,17 +41,17 @@ function LiveView() {
           <i className="fa-solid fa-table-cells text-red-500"></i>
           <h1 className="font-display text-base sm:text-lg font-bold tracking-tight text-white whitespace-nowrap">D&bull;IA&bull;NE Bingo Tracker <span className="text-xs text-red-500 font-normal bg-red-500/10 px-2 py-0.5 rounded-full ml-2">v1.2</span></h1>
         </div>
+
+        {/* Cluster droite - layout : [Horloge] [EN DIRECT] [Boule principale] [Sortis] [Restants]
+            La pastille de connexion serveur reste en tete (indicateur d'etat). */}
         <div className="flex items-center gap-3">
           {/* Pastille de connexion serveur (donnees en direct) */}
           <span className={`w-2 h-2 rounded-full flex-shrink-0 ${isConnected ? 'bg-emerald-500 animate-pulse' : 'bg-slate-500'}`} title={isConnected ? 'Donnees en direct (connecte)' : 'Hors connexion'}></span>
-          {/* BOULE EN COURS (principale) - a GAUCHE de l'horloge. Identique a la
-              replique de l'historique : rouge foncE, typo blanche grasse, flash moyen. */}
-          <div className="ball-waiting flex items-center justify-center px-3 py-1 rounded-lg font-mono font-bold text-sm sm:text-base bg-red-700 text-white border-2 border-white/40 shadow-md whitespace-nowrap leading-none">
-            {lastDrawn !== null ? `${getLetterForNumber(lastDrawn)}-${lastDrawn}` : '--'}
-          </div>
-          {/* Horloge style terminal, a GAUCHE du bouton "EN DIRECT" (sans cadre) */}
+
+          {/* [Horloge] style terminal, sans cadre */}
           <TerminalClock className="text-red-400 text-sm sm:text-base" />
-          {/* Bouton EN DIRECT = interrupteur audio CIGN-FM 96.7 (effet ON AIR).
+
+          {/* [EN DIRECT] = interrupteur audio CIGN-FM 96.7 (effet ON AIR).
               Allume : rouge neon + enfonce. Eteint : gris mat. */}
           <button
             onClick={radio.toggle}
@@ -65,8 +65,17 @@ function LiveView() {
             <span className={`w-2 h-2 rounded-full ${radio.isPlaying ? 'bg-white animate-pulse' : 'bg-slate-500'}`}></span>
             EN DIRECT
           </button>
+
+          {/* [Boule principale] - identique a la replique de l'historique :
+              rouge foncE, typo blanche grasse, flash moyen. */}
+          <div className="ball-waiting flex items-center justify-center px-3 py-1 rounded-lg font-mono font-bold text-sm sm:text-base bg-red-700 text-white border-2 border-white/40 shadow-md whitespace-nowrap leading-none">
+            {lastDrawn !== null ? `${getLetterForNumber(lastDrawn)}-${lastDrawn}` : '--'}
+          </div>
+
+          {/* [Sortis] */}
           <span className="text-xl font-extrabold text-red-500">{drawnCount}</span>
           <div className="w-px h-5 bg-slate-700"></div>
+          {/* [Restants] */}
           <span className="text-xl font-extrabold text-slate-200">{remainingCount}</span>
         </div>
       </header>

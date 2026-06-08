@@ -6,6 +6,7 @@
 import { useState } from 'react'
 import { useGameState } from './hooks/useGameState'
 import type { SavedGame } from './lib/exportGame'
+import { getLetterForNumber } from './lib/bingoLogic'
 import BingoBoard from './components/BingoBoard'
 import HistoryTicker from './components/HistoryTicker'
 import SaveGameModal from './components/SaveGameModal'
@@ -26,6 +27,9 @@ function App() {
 
   // Audience en direct : compte les spectateurs sur /live (Diane observe seulement)
   const { count: liveAudience } = useLiveAudience(false)
+
+  // Boule principale (la plus recente du tirage) pour le header, comme sur /live
+  const lastDrawn = drawnNumbersRecentFirst.length > 0 ? drawnNumbersRecentFirst[0] : null
 
   const [gameToSave, setGameToSave] = useState<SavedGame | null>(null)
 
@@ -79,8 +83,8 @@ function App() {
           <h1 className="font-display text-base sm:text-lg font-bold tracking-tight text-white whitespace-nowrap">D&bull;IA&bull;NE Bingo Tracker <span className="text-xs text-red-500 font-normal bg-red-500/10 px-2 py-0.5 rounded-full ml-2">v1.2</span></h1>
         </div>
 
-        {/* AUDIENCES EN DIRECT (centre du header) : compte des spectateurs /live en
-            temps reel + raccourci vers la page spectateurs. */}
+        {/* AUDIENCES (centre du header) : compte des spectateurs /live en temps reel
+            + raccourci vers la page spectateurs. Libelle court "Audiences:" en gras. */}
         <a
           href="/live"
           target="_blank"
@@ -89,13 +93,16 @@ function App() {
           className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-2 px-3 py-1 rounded-full bg-slate-800/70 border border-slate-700 hover:bg-slate-700/70 transition"
         >
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-          <span className="text-[11px] font-semibold text-slate-300 uppercase tracking-wider">Audiences en direct</span>
+          <span className="text-sm font-bold text-slate-300 tracking-wide">Audiences:</span>
           <span className="text-sm font-extrabold text-emerald-400 tabular-nums leading-none">{liveAudience}</span>
         </a>
 
+        {/* Cluster droite - layout : [Horloge] [EN DIRECT] [Boule principale] [Sortis] [Restants] */}
         <div className="flex gap-3 sm:gap-4 items-center ml-auto">
-          {/* Horloge + bouton EN DIRECT (audio CIGN-FM 96.7), comme sur /live */}
+          {/* [Horloge] */}
           <TerminalClock className="text-red-400 text-sm sm:text-base" />
+
+          {/* [EN DIRECT] (audio CIGN-FM 96.7) */}
           <button
             onClick={radio.toggle}
             title={radio.isPlaying ? "Couper l'audio CIGN-FM 96.7" : "Ecouter CIGN-FM 96.7 en direct"}
@@ -108,17 +115,31 @@ function App() {
             <span className={`w-2 h-2 rounded-full ${radio.isPlaying ? 'bg-white animate-pulse' : 'bg-slate-500'}`}></span>
             EN DIRECT
           </button>
+
           <div className="w-px h-5 bg-slate-700"></div>
+
+          {/* [Boule principale] = la plus recente du tirage (style identique a /live) */}
+          <div className="ball-waiting flex items-center justify-center px-3 py-1 rounded-lg font-mono font-bold text-sm sm:text-base bg-red-700 text-white border-2 border-white/40 shadow-md whitespace-nowrap leading-none">
+            {lastDrawn !== null ? `${getLetterForNumber(lastDrawn)}-${lastDrawn}` : '--'}
+          </div>
+
+          <div className="w-px h-5 bg-slate-700"></div>
+
+          {/* [Sortis] */}
           <div className="flex items-center gap-2">
             <span className="text-slate-400 font-semibold text-xs uppercase tracking-wider hidden md:inline">Sortis</span>
             <span className="text-xl sm:text-2xl font-extrabold text-red-500 leading-none">{drawnCount}</span>
           </div>
+
           <div className="w-px h-5 bg-slate-700"></div>
+
+          {/* [Restants] */}
           <div className="flex items-center gap-2">
             <span className="text-slate-400 font-semibold text-xs uppercase tracking-wider hidden md:inline">Restants</span>
             <span className="text-xl sm:text-2xl font-extrabold text-slate-200 leading-none">{remainingCount}</span>
           </div>
         </div>
+
         <div className="flex items-center gap-2 flex-shrink-0">
           <button className="w-3.5 h-3.5 rounded-full bg-yellow-500 border border-yellow-600" title="Reduire" />
           <button className="w-3.5 h-3.5 rounded-full bg-green-500 border border-green-600" title="Agrandir" />
