@@ -5,6 +5,7 @@
 // S'affiche tant que l'utilisateur n'a pas decide (consent === null).
 // Loi 25 : le refus doit etre AUSSI simple que l'acceptation -> deux boutons
 // de meme importance. Le refus ne bloque pas l'acces au bingo.
+// (Texte affiche accentue pour le professionnalisme ; commentaires sans accents.)
 
 import { useConsent } from '../hooks/useConsent'
 
@@ -17,10 +18,10 @@ export default function ConsentBanner() {
     <div className="fixed inset-x-0 bottom-0 z-50 bg-slate-800/95 backdrop-blur border-t border-slate-700 px-4 py-3 shadow-2xl">
       <div className="max-w-4xl mx-auto flex flex-col sm:flex-row sm:items-center gap-3">
         <div className="flex-1 text-sm text-slate-300 leading-snug">
-          <span className="font-bold text-white">Respect de votre vie privee. </span>
-          Ce site mesure l'audience en direct de facon anonyme. Avec votre accord, on peut aussi
-          estimer votre region (ville / province) pour nos statistiques. Refuser ne bloque pas
-          l'acces au bingo.{' '}
+          <span className="font-bold text-white">Respect de votre vie privée. </span>
+          Ce site mesure l'audience en direct de façon anonyme. Avec votre accord, on peut aussi
+          estimer votre région (ville / province) pour nos statistiques. Refuser ne bloque pas
+          l'accès au bingo.{' '}
           <a
             href="/confidentialite"
             className="text-red-400 underline underline-offset-2 hover:text-red-300 whitespace-nowrap"
