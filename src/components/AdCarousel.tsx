@@ -11,8 +11,7 @@
 
 const SCROLL_THRESHOLD = 4;
 
-// Texte du commanditaire CIGN-FM, decoupe en lignes lisibles
-// (sans accents pour rester coherent avec le reste de l'app)
+// Texte du commanditaire CIGN-FM, decoupe en lignes lisibles.
 const CIGN_LINE1 = "Commanditez une boule du Radio-Bingo de CIGN-FM";
 const CIGN_LINE2 = "M. Luc Frechette, conseiller aux ventes";
 const CIGN_PHONE = "819 804-0967";
@@ -25,13 +24,13 @@ type Promo =
 // 8 panneaux : 1 K103.7 + 5 gabarits libres + 2 CIGN-FM (melanges au hasard).
 const PROMOS: Promo[] = [
   { id: "k1037", kind: "logo", imageSrc: "/sponsor-k1037.jpg", alt: "K103.7 Radio Bingo", href: "https://k1037.com/radiobingo/" },
-  { id: "libre-1", kind: "placeholder", text: "Votre Logo ICI - Contactez Paskal a paskal.brochu@gmail.com", alt: "Espace publicitaire disponible", href: "mailto:paskal.brochu@gmail.com" },
+  { id: "libre-1", kind: "placeholder", text: "Votre Logo ICI - Contactez Paskal à paskal.brochu@gmail.com", alt: "Espace publicitaire disponible", href: "mailto:paskal.brochu@gmail.com" },
   { id: "cign-1", kind: "cign", logoSrc: "/cign-fm-967.png", alt: "CIGN-FM 96.7 Radio-Bingo", href: "tel:+18198040967" },
-  { id: "libre-2", kind: "placeholder", text: "Votre Logo ICI - Contactez Paskal a paskal.brochu@gmail.com", alt: "Espace publicitaire disponible", href: "mailto:paskal.brochu@gmail.com" },
-  { id: "libre-3", kind: "placeholder", text: "Votre Logo ICI - Contactez Paskal a paskal.brochu@gmail.com", alt: "Espace publicitaire disponible", href: "mailto:paskal.brochu@gmail.com" },
+  { id: "libre-2", kind: "placeholder", text: "Votre Logo ICI - Contactez Paskal à paskal.brochu@gmail.com", alt: "Espace publicitaire disponible", href: "mailto:paskal.brochu@gmail.com" },
+  { id: "libre-3", kind: "placeholder", text: "Votre Logo ICI - Contactez Paskal à paskal.brochu@gmail.com", alt: "Espace publicitaire disponible", href: "mailto:paskal.brochu@gmail.com" },
   { id: "cign-2", kind: "cign", logoSrc: "/cign-fm-967.png", alt: "CIGN-FM 96.7 Radio-Bingo", href: "tel:+18198040967" },
-  { id: "libre-4", kind: "placeholder", text: "Votre Logo ICI - Contactez Paskal a paskal.brochu@gmail.com", alt: "Espace publicitaire disponible", href: "mailto:paskal.brochu@gmail.com" },
-  { id: "libre-5", kind: "placeholder", text: "Votre Logo ICI - Contactez Paskal a paskal.brochu@gmail.com", alt: "Espace publicitaire disponible", href: "mailto:paskal.brochu@gmail.com" },
+  { id: "libre-4", kind: "placeholder", text: "Votre Logo ICI - Contactez Paskal à paskal.brochu@gmail.com", alt: "Espace publicitaire disponible", href: "mailto:paskal.brochu@gmail.com" },
+  { id: "libre-5", kind: "placeholder", text: "Votre Logo ICI - Contactez Paskal à paskal.brochu@gmail.com", alt: "Espace publicitaire disponible", href: "mailto:paskal.brochu@gmail.com" },
 ];
 
 // Hauteur uniforme (h-24) pour tous. Largeur : standard (w-72), CIGN plus large (w-96)

@@ -1,10 +1,11 @@
 // ============================================
-// D•IA•NE Bingo Tracker v1.2
+// D-IA-NE Bingo Tracker v1.2
 // Logique d'exportation d'une partie sauvegardee
 // ============================================
 // Genere deux fichiers telechargeables :
 //   - un fichier .txt lisible par un humain (LIST OUTPUT)
 //   - un fichier .json reutilisable (base de donnees)
+// Le .txt est encode en UTF-8 (charset=utf-8) -> les accents s'affichent bien.
 
 import { getLetterForNumber, COLUMNS } from './bingoLogic'
 import type { BingoCheck } from '../types'
@@ -26,12 +27,12 @@ export interface SavedGame {
 // FONCTION : Formater une DATE seule (sans heure)
 // ============================================
 function formatDateOnly(isoString: string | null): string {
-  if (!isoString) return 'Non demarre'
+  if (!isoString) return 'Non démarré'
   const date = new Date(isoString)
   const jour = date.getDate()
   const mois = [
-    'janvier', 'fevrier', 'mars', 'avril', 'mai', 'juin',
-    'juillet', 'aout', 'septembre', 'octobre', 'novembre', 'decembre',
+    'janvier', 'février', 'mars', 'avril', 'mai', 'juin',
+    'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre',
   ][date.getMonth()]
   const annee = date.getFullYear()
   return `${jour} ${mois} ${annee}`
@@ -138,7 +139,7 @@ function buildVerticalBingoCard(drawnNumbers: number[]): string {
 // ============================================
 function buildBingoChecksSection(bingoChecks?: BingoCheck[]): string {
   if (!bingoChecks || bingoChecks.length === 0) {
-    return 'Aucune verification BINGO enregistree.'
+    return 'Aucune vérification BINGO enregistrée.'
   }
 
   const lines = bingoChecks.map((check, index) => {
@@ -173,20 +174,20 @@ function buildTextContent(game: SavedGame): string {
 
 Nom du bingo      : ${displayName}
 Date              : ${formatDateOnly(game.startedAt)}
-Heure de debut    : ${formatTimeOnly(game.startedAt)}
+Heure de début    : ${formatTimeOnly(game.startedAt)}
 Heure de fin      : ${formatTimeOnly(game.endedAt)}
 Duration          : ${formatDuration(game.durationMinutes)}
 Boules sorties    : ${game.totalDrawn}
 Boules restantes  : ${remaining}
 
 --------------------------------------------
-   VERIFICATIONS BINGO
+   VÉRIFICATIONS BINGO
 --------------------------------------------
 
 ${bingoChecksSection}
 
 --------------------------------------------
-   NUMEROS TIRES (ordre de tirage)
+   NUMÉROS TIRÉS (ordre de tirage)
 --------------------------------------------
 
 ${ballsCompact}
@@ -198,7 +199,7 @@ ${ballsCompact}
 ${bingoCard}
 
 ============================================
-   Logiciel Fabrique et Opere par:
+   Logiciel Fabriqué et Opéré par:
    Diane Brochu et Paskal Brochu (c) 2026
 ============================================
 `

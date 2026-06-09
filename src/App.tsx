@@ -1,5 +1,5 @@
 // ============================================
-// D•IA•NE Bingo Tracker v1.2
+// D-IA-NE BINGO Tracker v1.2
 // Composant principal - Interface operatrice (Diane)
 // ============================================
 
@@ -40,11 +40,11 @@ function App() {
 
   function handleNewGame() {
     if (isLocked) {
-      window.alert('La grille est verrouillee (BINGO actif). Declenche le verrou pour commencer une nouvelle partie.')
+      window.alert('La grille est verrouillée (BINGO actif). Déclenche le verrou pour commencer une nouvelle partie.')
       return
     }
     if (drawnCount > 0) {
-      const confirmed = window.confirm('Es-tu sure de vouloir effacer le tirage en cours et commencer une nouvelle partie ?')
+      const confirmed = window.confirm('Es-tu sûre de vouloir effacer le tirage en cours et commencer une nouvelle partie ?')
       if (!confirmed) return
     }
     resetGame()
@@ -52,14 +52,14 @@ function App() {
 
   function handleSaveGame() {
     if (drawnCount === 0) {
-      window.alert('Aucune boule n\'a ete tiree. Il n\'y a rien a sauvegarder pour le moment.')
+      window.alert('Aucune boule n\'a été tirée. Il n\'y a rien à sauvegarder pour le moment.')
       return
     }
     const now = new Date()
     const heures = String(now.getHours()).padStart(2, '0')
     const minutes = String(now.getMinutes()).padStart(2, '0')
     const defaultName = `Bingo_${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}_${heures}h${minutes}`
-    const chosenName = window.prompt('Quel nom veux-tu donner a ce bingo ?\n(Tu peux garder le nom propose ou taper le tien)', defaultName)
+    const chosenName = window.prompt('Quel nom veux-tu donner à ce bingo ?\n(Tu peux garder le nom proposé ou taper le tien)', defaultName)
     if (chosenName === null) return
     const finalName = chosenName.trim() === '' ? defaultName : chosenName.trim()
     const endedAt = new Date().toISOString()
@@ -105,7 +105,7 @@ function App() {
           {/* [EN DIRECT] (audio CIGN-FM 96.7) */}
           <button
             onClick={radio.toggle}
-            title={radio.isPlaying ? "Couper l'audio CIGN-FM 96.7" : "Ecouter CIGN-FM 96.7 en direct"}
+            title={radio.isPlaying ? "Couper l'audio CIGN-FM 96.7" : 'Écouter CIGN-FM 96.7 en direct'}
             className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-200 select-none ${
               radio.isPlaying
                 ? 'bg-red-600 text-white border border-red-300 ring-2 ring-red-400/60 shadow-[0_0_14px_3px_rgba(239,68,68,0.75)] scale-95'
@@ -130,7 +130,7 @@ function App() {
           <div className="w-px h-5 bg-slate-700"></div>
 
           {/* [Sortis] - infobulle : "Nombre de boules tirees" */}
-          <div title="Nombre de boules tirees" className="flex items-center gap-2 cursor-default">
+          <div title="Nombre de boules tirées" className="flex items-center gap-2 cursor-default">
             <span className="text-slate-400 font-semibold text-xs uppercase tracking-wider hidden md:inline">Sortis</span>
             <span className="text-xl sm:text-2xl font-extrabold text-red-500 leading-none">{drawnCount}</span>
           </div>
@@ -145,7 +145,7 @@ function App() {
         </div>
 
         <div className="flex items-center gap-2 flex-shrink-0">
-          <button className="w-3.5 h-3.5 rounded-full bg-yellow-500 border border-yellow-600" title="Reduire" />
+          <button className="w-3.5 h-3.5 rounded-full bg-yellow-500 border border-yellow-600" title="Réduire" />
           <button className="w-3.5 h-3.5 rounded-full bg-green-500 border border-green-600" title="Agrandir" />
           <button className="w-3.5 h-3.5 rounded-full bg-red-500 border border-red-600" title="Fermer" />
         </div>
@@ -171,7 +171,7 @@ function App() {
           </div>
         )}
 
-        <button onClick={toggleBingoLock} className={`flex-shrink-0 font-display font-extrabold rounded-2xl border-4 border-white transition-all duration-200 select-none uppercase tracking-wider ${isLocked ? 'bg-red-600 text-white scale-105 shadow-xl shadow-red-500/50 px-8 py-2 text-2xl sm:text-3xl ring-4 ring-red-400/40' : 'bg-red-500/80 hover:bg-red-500 text-white px-6 py-2 text-xl sm:text-2xl active:scale-95'}`} title={isLocked ? 'Cliquer pour deverrouiller la grille' : 'Cliquer pour verrouiller la grille (BINGO !)'}>
+        <button onClick={toggleBingoLock} className={`flex-shrink-0 font-display font-extrabold rounded-2xl border-4 border-white transition-all duration-200 select-none uppercase tracking-wider ${isLocked ? 'bg-red-600 text-white scale-105 shadow-xl shadow-red-500/50 px-8 py-2 text-2xl sm:text-3xl ring-4 ring-red-400/40' : 'bg-red-500/80 hover:bg-red-500 text-white px-6 py-2 text-xl sm:text-2xl active:scale-95'}`} title={isLocked ? 'Cliquer pour déverrouiller la grille' : 'Cliquer pour verrouiller la grille (BINGO !)'}>
           {isLocked ? (<span className="flex items-center gap-2"><i className="fa-solid fa-lock"></i>BINGO</span>) : (<span className="flex items-center gap-2"><i className="fa-solid fa-trophy"></i>BINGO</span>)}
         </button>
       </div>
@@ -180,7 +180,7 @@ function App() {
         {isLocked && (
           <div className="absolute top-1 left-1/2 -translate-x-1/2 z-20 bg-red-600 text-white text-xs sm:text-sm font-bold px-4 py-1.5 rounded-full shadow-lg border border-white/40 flex items-center gap-2 animate-popIn">
             <i className="fa-solid fa-lock"></i>
-            GRILLE VERROUILLEE — Verification BINGO en cours
+            GRILLE VERROUILLÉE — Vérification BINGO en cours
           </div>
         )}
         <div className={`flex-grow flex flex-col transition-all duration-200 ${isLocked ? 'opacity-90 saturate-150' : ''}`}>

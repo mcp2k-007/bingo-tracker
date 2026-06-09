@@ -1,5 +1,5 @@
 // ============================================
-// D•IA•NE Bingo Tracker v1.2 - Phase 3.6
+// D-IA-NE Bingo Tracker v1.2 - Phase 3.6
 // Page : /stats - Dashboard analytics commanditaires
 // ============================================
 // Protegee par un mot de passe (barriere cote client via VITE_STATS_PASSWORD).
@@ -48,8 +48,8 @@ interface DayBucket {
 }
 
 const MONTHS = [
-  'janvier', 'fevrier', 'mars', 'avril', 'mai', 'juin',
-  'juillet', 'aout', 'septembre', 'octobre', 'novembre', 'decembre',
+  'janvier', 'février', 'mars', 'avril', 'mai', 'juin',
+  'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre',
 ]
 
 function dayKey(ms: number): string {
@@ -102,7 +102,7 @@ function Stats() {
 
   function tryUnlock() {
     if (!STATS_PASSWORD) {
-      setPwError('VITE_STATS_PASSWORD non configuree (voir .env.local / Vercel).')
+      setPwError('VITE_STATS_PASSWORD non configurée (voir .env.local / Vercel).')
       return
     }
     if (pwInput === STATS_PASSWORD) {
@@ -136,7 +136,7 @@ function Stats() {
       if (error) throw error
       setRows((data ?? []) as SessionRow[])
     } catch {
-      setLoadError('Erreur de chargement des donnees Supabase.')
+      setLoadError('Erreur de chargement des données Supabase.')
     } finally {
       setLoading(false)
     }
@@ -209,7 +209,7 @@ function Stats() {
         <div className="w-full max-w-sm bg-slate-800/60 border border-slate-700 rounded-2xl p-6 shadow-xl">
           <div className="flex items-center gap-2 mb-4">
             <i className="fa-solid fa-lock text-red-500"></i>
-            <h1 className="font-display text-lg font-bold text-white">Statistiques - Acces protege</h1>
+            <h1 className="font-display text-lg font-bold text-white">Statistiques - Accès protégé</h1>
           </div>
           <p className="text-sm text-slate-400 mb-4">Entre le mot de passe pour voir les statistiques commanditaires.</p>
           <input
@@ -228,7 +228,7 @@ function Stats() {
           >
             Entrer
           </button>
-          <a href="/live" className="block text-center text-xs text-slate-500 hover:text-slate-300 mt-4 transition">Retour a /live</a>
+          <a href="/live" className="block text-center text-xs text-slate-500 hover:text-slate-300 mt-4 transition">Retour à /live</a>
         </div>
       </div>
     )
@@ -245,9 +245,9 @@ function Stats() {
           <h1 className="font-display text-base sm:text-lg font-bold text-white">D&bull;IA&bull;NE Statistiques <span className="text-xs text-red-500 font-normal bg-red-500/10 px-2 py-0.5 rounded-full ml-1">commanditaires</span></h1>
         </div>
         <div className="flex items-center gap-2">
-          <button onClick={load} title="Rafraichir" className="px-3 py-1.5 rounded-lg bg-slate-700 hover:bg-slate-600 active:scale-95 transition text-sm font-semibold flex items-center gap-2">
+          <button onClick={load} title="Rafraîchir" className="px-3 py-1.5 rounded-lg bg-slate-700 hover:bg-slate-600 active:scale-95 transition text-sm font-semibold flex items-center gap-2">
             <i className={`fa-solid fa-rotate ${loading ? 'fa-spin' : ''}`}></i>
-            <span className="hidden sm:inline">Rafraichir</span>
+            <span className="hidden sm:inline">Rafraîchir</span>
           </button>
           <button onClick={lock} title="Verrouiller" className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 active:scale-95 transition text-sm font-semibold flex items-center gap-2 text-slate-400">
             <i className="fa-solid fa-lock"></i>
@@ -259,7 +259,7 @@ function Stats() {
         {loading && rows === null && (
           <div className="text-center py-16 text-slate-400">
             <i className="fa-solid fa-circle-notch fa-spin text-red-500 text-3xl mb-3"></i>
-            <p>Chargement des donnees...</p>
+            <p>Chargement des données...</p>
           </div>
         )}
 
@@ -271,9 +271,9 @@ function Stats() {
           <div className="text-center py-16 text-slate-400">
             <i className="fa-solid fa-chart-simple text-slate-600 text-4xl mb-3"></i>
             <p className="font-semibold text-slate-300">Aucune session valide pour l'instant.</p>
-            <p className="text-sm mt-1">Ouvre <a href="/live" className="text-red-400 underline">/live</a> et reste quelques secondes pour generer des donnees.</p>
+            <p className="text-sm mt-1">Ouvre <a href="/live" className="text-red-400 underline">/live</a> et reste quelques secondes pour générer des données.</p>
             {metrics.rawCount > 0 && (
-              <p className="text-xs text-slate-500 mt-2">({metrics.rawCount} ligne(s) brute(s) trop courte(s) ou fantome(s), filtree(s).)</p>
+              <p className="text-xs text-slate-500 mt-2">({metrics.rawCount} ligne(s) brute(s) trop courte(s) ou fantôme(s), filtrée(s).)</p>
             )}
           </div>
         )}
@@ -284,21 +284,21 @@ function Stats() {
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
               <KpiCard label="Sessions totales" value={String(metrics.totalSessions)} icon="fa-users" accent="text-red-400" />
               <KpiCard
-                label="Pic de simultanes"
+                label="Pic de simultanés"
                 value={String(metrics.peak)}
-                sub={metrics.peakAt ? `${fmtDay(dayKey(metrics.peakAt))} a ${fmtClock(metrics.peakAt)}` : undefined}
+                sub={metrics.peakAt ? `${fmtDay(dayKey(metrics.peakAt))} à ${fmtClock(metrics.peakAt)}` : undefined}
                 icon="fa-arrow-trend-up"
                 accent="text-emerald-400"
               />
-              <KpiCard label="Duree moyenne" value={fmtDuration(metrics.avgSec)} icon="fa-stopwatch" accent="text-sky-400" />
-              <KpiCard label="Spectateurs-minutes" value={String(metrics.viewerMinutes)} sub="portee x temps" icon="fa-clock" accent="text-amber-400" />
+              <KpiCard label="Durée moyenne" value={fmtDuration(metrics.avgSec)} icon="fa-stopwatch" accent="text-sky-400" />
+              <KpiCard label="Spectateurs-minutes" value={String(metrics.viewerMinutes)} sub="portée x temps" icon="fa-clock" accent="text-amber-400" />
             </div>
 
             {/* Tableau par jour */}
             <div className="bg-slate-800/40 border border-slate-700 rounded-2xl overflow-hidden">
               <div className="px-4 py-3 border-b border-slate-700 flex items-center gap-2">
                 <i className="fa-solid fa-calendar-days text-slate-400"></i>
-                <h2 className="font-display font-bold text-white">Repartition par jour</h2>
+                <h2 className="font-display font-bold text-white">Répartition par jour</h2>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
@@ -306,7 +306,7 @@ function Stats() {
                     <tr className="text-slate-400 text-xs uppercase tracking-wider border-b border-slate-700/70">
                       <th className="text-left font-semibold px-4 py-2">Date</th>
                       <th className="text-right font-semibold px-4 py-2">Sessions</th>
-                      <th className="text-right font-semibold px-4 py-2">Pic simultane</th>
+                      <th className="text-right font-semibold px-4 py-2">Pic simultané</th>
                       <th className="text-right font-semibold px-4 py-2">Total minutes</th>
                     </tr>
                   </thead>
@@ -325,8 +325,8 @@ function Stats() {
             </div>
 
             <p className="text-xs text-slate-500 mt-4">
-              Sessions regroupees par appareil. Les sessions de moins de {MIN_SESSION_SECONDS}s sont filtrees (bounces / fantomes).
-              {metrics.rawCount > metrics.totalSessions && ` (${metrics.rawCount - metrics.totalSessions} ligne(s) filtree(s).)`}
+              Sessions regroupées par appareil. Les sessions de moins de {MIN_SESSION_SECONDS}s sont filtrées (bounces / fantômes).
+              {metrics.rawCount > metrics.totalSessions && ` (${metrics.rawCount - metrics.totalSessions} ligne(s) filtrée(s).)`}
             </p>
           </>
         )}

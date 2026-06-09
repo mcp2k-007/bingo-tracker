@@ -1,5 +1,5 @@
 // ============================================
-// D•IA•NE Bingo Tracker v1.2
+// D-IA-NE BINGO TRACKER v1.2
 // Composant : Historique des boules tirees
 // ============================================
 // Affiche l'historique des boules en bandeau horizontal FIXE.
@@ -22,7 +22,7 @@ interface HistoryTickerProps {
 
 function HistoryTicker({ drawnNumbersRecentFirst }: HistoryTickerProps) {
   return (
-    <div title="Historique des boules tirees" className="bg-slate-950 border-t border-slate-800 overflow-hidden">
+    <div title="Historique des boules tirées" className="bg-slate-950 border-t border-slate-800 overflow-hidden">
 
       {/* Zone glissable horizontalement (au doigt) */}
       <div className="history-scroll overflow-x-auto py-2 px-2">
@@ -30,7 +30,7 @@ function HistoryTicker({ drawnNumbersRecentFirst }: HistoryTickerProps) {
         {/* Cas : aucune boule tiree */}
         {drawnNumbersRecentFirst.length === 0 ? (
           <span className="text-slate-500 text-sm font-mono italic whitespace-nowrap">
-            Aucune boule tiree pour l'instant.
+            Aucune boule tirée pour l'instant.
           </span>
         ) : (
           <div className="flex items-center gap-2 w-max">

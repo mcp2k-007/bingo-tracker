@@ -51,7 +51,7 @@ function LiveView() {
             La pastille de connexion serveur reste en tete (indicateur d'etat). */}
         <div className="flex items-center gap-3">
           {/* Pastille de connexion serveur (donnees en direct) */}
-          <span className={`w-2 h-2 rounded-full flex-shrink-0 ${isConnected ? 'bg-emerald-500 animate-pulse' : 'bg-slate-500'}`} title={isConnected ? 'Donnees en direct (connecte)' : 'Hors connexion'}></span>
+          <span className={`w-2 h-2 rounded-full flex-shrink-0 ${isConnected ? 'bg-emerald-500 animate-pulse' : 'bg-slate-500'}`} title={isConnected ? 'Données en direct (connecté)' : 'Hors connexion'}></span>
 
           {/* [Horloge] style terminal, sans cadre */}
           <TerminalClock className="text-red-400 text-sm sm:text-base" />
@@ -60,7 +60,7 @@ function LiveView() {
               Allume : rouge neon + enfonce. Eteint : gris mat. */}
           <button
             onClick={radio.toggle}
-            title={radio.isPlaying ? "Couper l'audio CIGN-FM 96.7" : "Ecouter CIGN-FM 96.7 en direct"}
+            title={radio.isPlaying ? "Couper l'audio CIGN-FM 96.7" : 'Écouter CIGN-FM 96.7 en direct'}
             className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-200 select-none ${
               radio.isPlaying
                 ? 'bg-red-600 text-white border border-red-300 ring-2 ring-red-400/60 shadow-[0_0_14px_3px_rgba(239,68,68,0.75)] scale-95'
@@ -81,7 +81,7 @@ function LiveView() {
           </div>
 
           {/* [Sortis] - infobulle : "Nombre de boules tirees" */}
-          <span title="Nombre de boules tirees" className="text-xl font-extrabold text-red-500 cursor-default">{drawnCount}</span>
+          <span title="Nombre de boules tirées" className="text-xl font-extrabold text-red-500 cursor-default">{drawnCount}</span>
           <div className="w-px h-5 bg-slate-700"></div>
           {/* [Restants] - infobulle : "Nombre de boules restantes" */}
           <span title="Nombre de boules restantes" className="text-xl font-extrabold text-slate-200 cursor-default">{remainingCount}</span>
@@ -98,10 +98,10 @@ function LiveView() {
           <div className="bg-red-600 border-2 border-white/40 rounded-xl px-4 py-3 text-center shadow-lg animate-pulse">
             <div className="flex items-center justify-center gap-3 mb-1">
               <i className="fa-solid fa-hand text-white text-xl"></i>
-              <span className="font-display text-white font-extrabold text-lg sm:text-xl uppercase tracking-wider">Verification BINGO</span>
+              <span className="font-display text-white font-extrabold text-lg sm:text-xl uppercase tracking-wider">Vérification BINGO</span>
               <i className="fa-solid fa-hand text-white text-xl"></i>
             </div>
-            <p className="text-white/90 text-sm sm:text-base font-semibold">Ne bougez pas vos cartes, on verifie un Bingo au telephone avec un participant presentement, merci de votre patience !!!</p>
+            <p className="text-white/90 text-sm sm:text-base font-semibold">Ne bougez pas vos cartes, on vérifie un Bingo au téléphone avec un participant présentement, merci de votre patience !!!</p>
             <div className="mt-2 inline-flex items-center gap-2 bg-white/20 rounded-full px-4 py-1">
               <i className="fa-solid fa-stopwatch text-white"></i>
               <span className="font-display text-white font-extrabold text-lg">{formatBingoTimer(bingoElapsed)}</span>
@@ -136,10 +136,10 @@ function LiveView() {
 
       {/* Historique - infobulle au survol : "Historique des boules tirees".
           La boule la plus recente (index 0) affiche plutot "Boules en cours". */}
-      <div title="Historique des boules tirees" className="bg-slate-950 border-t border-slate-800 overflow-hidden flex-shrink-0">
+      <div title="Historique des boules tirées" className="bg-slate-950 border-t border-slate-800 overflow-hidden flex-shrink-0">
         <div className="overflow-x-auto py-2 px-2">
           {drawnNumbersRecentFirst.length === 0 ? (
-            <span className="text-slate-500 text-sm font-mono italic whitespace-nowrap">Aucune boule tiree pour l'instant.</span>
+            <span className="text-slate-500 text-sm font-mono italic whitespace-nowrap">Aucune boule tirée pour l'instant.</span>
           ) : (
             <div className="flex items-center gap-2 w-max">
               {drawnNumbersRecentFirst.map((value, index) => (<span key={value} title={index === 0 ? 'Boules en cours' : undefined} className={`inline-flex items-center justify-center px-3 py-1 rounded-lg font-mono font-bold text-sm sm:text-base whitespace-nowrap flex-shrink-0 ${index === 0 ? 'ball-waiting bg-red-700 text-white border-2 border-white/40 shadow-md' : 'bg-slate-800 text-slate-200 border border-slate-700'}`}>{getLetterForNumber(value)}-{value}</span>))}
