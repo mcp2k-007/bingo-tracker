@@ -1,5 +1,5 @@
 // ============================================
-// D-IA-NE BINGO Tracker v1.2
+// D•IA•NE Bingo Tracker v1.2
 // Composant principal - Interface operatrice (Diane)
 // ============================================
 

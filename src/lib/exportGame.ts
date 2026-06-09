@@ -1,5 +1,5 @@
 // ============================================
-// D-IA/NE BINGO TRACKER v1.2
+// D•IA•NE Bingo Tracker v1.2
 // Logique d'exportation d'une partie sauvegardee
 // ============================================
 // Genere deux fichiers telechargeables :

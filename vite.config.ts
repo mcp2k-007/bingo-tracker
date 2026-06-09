@@ -2,9 +2,9 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
-// ============================================
-// Configuration Vite pour D-IA-NE BINGO Tracker
-// ============================================
+// ==================================================
+// Configuration Vite pour D•IA•NE Bingo Tracker v1.2
+// ==================================================
 // https://vite.dev/config/
 
 export default defineConfig({
@@ -29,8 +29,8 @@ export default defineConfig({
       // C'est ce fichier qui décrit l'app à iOS/Android quand elle est installée
       // ============================================
       manifest: {
-        name: 'D-IA-NE BINGO Tracker',
-        short_name: 'D-IA-NE Bingo',
+        name: 'D•IA•NE Bingo Tracker',
+        short_name: 'D•IA•NE Bingo',
         description: 'Application de suivi de bingo en temps réel - Fabriqué et opéré par Diane Brochu',
         theme_color: '#0f172a',      // Couleur barre de statut (slate-900 sombre)
         background_color: '#0f172a', // Couleur splash screen au démarrage

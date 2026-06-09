@@ -8,6 +8,7 @@ import { getLetterForNumber, COLUMNS, getNumbersForColumn } from '../lib/bingoLo
 import AdCarousel from '../components/AdCarousel'
 import Footer from '../components/Footer'
 import TerminalClock from '../components/TerminalClock'
+import ConsentBanner from '../components/ConsentBanner'
 import { useLiveRadio } from '../hooks/useLiveRadio'
 import { useLiveAudience } from '../hooks/useLiveAudience'
 import { useViewerSession } from '../hooks/useViewerSession'
@@ -148,6 +149,9 @@ function LiveView() {
       </div>
 
       <Footer />
+
+      {/* Banniere de consentement Loi 25 (s'auto-cache une fois le choix fait) */}
+      <ConsentBanner />
     </div>
   )
 }

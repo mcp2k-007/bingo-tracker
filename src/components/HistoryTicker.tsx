@@ -1,5 +1,5 @@
 // ============================================
-// D-IA-NE BINGO TRACKER v1.2
+// D•IA•NE Bingo Tracker v1.2
 // Composant : Historique des boules tirees
 // ============================================
 // Affiche l'historique des boules en bandeau horizontal FIXE.
