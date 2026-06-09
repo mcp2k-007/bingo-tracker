@@ -1,5 +1,5 @@
 // ============================================
-// D-IA-NE BINGO Tracker v1.2
+// D-IA-NE Bingo Tracker v1.2
 // Page : Vue Spectateur (/live) - Lecture seule
 // ============================================
 
@@ -10,6 +10,7 @@ import Footer from '../components/Footer'
 import TerminalClock from '../components/TerminalClock'
 import { useLiveRadio } from '../hooks/useLiveRadio'
 import { useLiveAudience } from '../hooks/useLiveAudience'
+import { useViewerSession } from '../hooks/useViewerSession'
 
 function LiveView() {
   const {
@@ -20,8 +21,11 @@ function LiveView() {
   // Audio en direct CIGN-FM 96.7 (bouton EN DIRECT / effet ON AIR)
   const radio = useLiveRadio()
 
-  // Presence : ce spectateur compte dans "Audiences" (vu cote Diane)
+  // Presence : ce spectateur compte dans "Audiences" (vu cote Diane), ephemere.
   useLiveAudience(true)
+
+  // Phase 3.6 : enregistre une SESSION persistante (analytics commanditaires).
+  useViewerSession()
 
   if (isLoading) {
     return (
@@ -112,7 +116,7 @@ function LiveView() {
       <main className="flex-grow overflow-hidden px-2 sm:px-3 pb-2 flex flex-col">
         <div className="bg-sky-200 rounded-2xl p-1.5 sm:p-2 shadow-2xl border-4 border-sky-300 h-full flex flex-col overflow-hidden">
           {/* En-tete B-I-N-G-O encadre d'un contour NOIR gras (demande #1).
-              Le meme style sera applique sur BingoBoard.tsx (cote iPad). */}
+              Le meme style est applique sur BingoBoard.tsx (cote iPad). */}
           <div className="flex-shrink-0 mb-1 sm:mb-1.5 rounded-xl border-2 sm:border-[3px] border-black p-1">
             <div className="grid grid-cols-5 gap-1 sm:gap-1.5">
               {COLUMNS.map((column) => (<div key={column.letter} className="text-center py-0.5 sm:py-1 rounded-lg font-extrabold text-lg sm:text-xl lg:text-2xl tracking-wider bg-blue-700 text-white shadow-md select-none leading-tight">{column.letter}</div>))}
