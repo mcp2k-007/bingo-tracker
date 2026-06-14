@@ -93,12 +93,6 @@ function fmtDuration(seconds: number): string {
   return `${m} min ${String(sec).padStart(2, '0')} s`
 }
 
-// Libelle "ville (region)" pour l'affichage geographique.
-function geoLabel(g: { city: string | null; region: string | null }): string {
-  if (g.city && g.region) return `${g.city} (${g.region})`
-  return g.city || g.region || '—'
-}
-
 // Pic d'intervalles qui se chevauchent (sweep-line).
 function computePeak(sessions: MergedSession[]): { peak: number; at: number | null } {
   const events: { t: number; delta: number }[] = []
