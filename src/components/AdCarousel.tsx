@@ -8,6 +8,18 @@
 //
 // - <= SCROLL_THRESHOLD panneaux : affichage STATIQUE centre.
 // - >  SCROLL_THRESHOLD panneaux : defilement auto droite -> gauche, boucle continue.
+//
+// UNIFORMITE DES LOGOS :
+//   Meme boite pour tous (CARD_H x CARD_W) + object-contain -> chaque logo grossit
+//   au max qui rentre, sans deformation. Pour que ca paraisse uniforme, les FICHIERS
+//   doivent etre detoures (sans grosse marge morte) : un logo perdu au milieu d'un
+//   grand canevas noir paraitra petit meme si la tuile est pleine.
+//
+// RESPONSIVE : tailles en classes Tailwind responsives (mobile -> desktop).
+//
+// IMAGES : dans public/ (chemin absolu "/nom.ext"). Noms minuscules-tirets, SANS
+// espace ni accent (Vercel = Linux, sensible a la casse). Lien possible vers un
+// site, Instagram, Facebook, Google Maps ou tel:.
 
 const SCROLL_THRESHOLD = 4;
 
@@ -16,45 +28,59 @@ const CIGN_LINE1 = "Commanditez une boule du Radio-Bingo de CIGN-FM";
 const CIGN_LINE2 = "M. Luc Frechette, conseiller aux ventes";
 const CIGN_PHONE = "819 804-0967";
 
+// --- Dimensions communes (responsive) -----------------------------------
+const CARD_H = "h-20 sm:h-24";                 // hauteur IDENTIQUE pour tous
+const CARD_W = "w-52 sm:w-64 md:w-72";         // largeur standard (logos / gabarit)
+const CARD_W_CIGN = "w-72 sm:w-80 md:w-[22rem]"; // CIGN : a peine plus large (texte)
+const CARD_BASE =
+  "flex items-center justify-center shrink-0 mx-2 rounded-lg overflow-hidden transition-transform hover:scale-[1.02]";
+
+// "bg" optionnel sur les logos : fond de la tuile (defaut bg-white).
+// Fond SOMBRE pour les logos a fond sombre (PMF, St-Michel, ProGym, Playground)
+// afin qu'ils s'integrent sans cadre blanc. Fond BLANC pour les logos clairs.
 type Promo =
-  | { id: string; kind: "logo"; imageSrc: string; alt: string; href: string }
+  | { id: string; kind: "logo"; imageSrc: string; alt: string; href: string; bg?: string }
   | { id: string; kind: "placeholder"; text: string; alt: string; href: string }
   | { id: string; kind: "cign"; logoSrc: string; alt: string; href: string };
 
-// 8 panneaux : 1 K103.7 + 5 gabarits libres + 2 CIGN-FM (melanges au hasard).
+// 9 panneaux : K103.7 + 5 commanditaires + 1 gabarit libre + 2 CIGN-FM.
 const PROMOS: Promo[] = [
   { id: "k1037", kind: "logo", imageSrc: "/sponsor-k1037.jpg", alt: "K103.7 Radio Bingo", href: "https://k1037.com/radiobingo/" },
-  { id: "libre-1", kind: "placeholder", text: "Votre Logo ICI - Contactez Paskal à paskal.brochu@gmail.com", alt: "Espace publicitaire disponible", href: "mailto:paskal.brochu@gmail.com" },
+  { id: "pmf", kind: "logo", imageSrc: "/sponsor-pmf.png", alt: "PMF - Boîte de nuit / Salle de spectacle", href: "https://www.instagram.com/pmfnightclub/", bg: "bg-black" },
   { id: "cign-1", kind: "cign", logoSrc: "/cign-fm-967.png", alt: "CIGN-FM 96.7 Radio-Bingo", href: "tel:+18198040967" },
-  { id: "libre-2", kind: "placeholder", text: "Votre Logo ICI - Contactez Paskal à paskal.brochu@gmail.com", alt: "Espace publicitaire disponible", href: "mailto:paskal.brochu@gmail.com" },
-  { id: "libre-3", kind: "placeholder", text: "Votre Logo ICI - Contactez Paskal à paskal.brochu@gmail.com", alt: "Espace publicitaire disponible", href: "mailto:paskal.brochu@gmail.com" },
+  { id: "services-sl", kind: "logo", imageSrc: "/sponsor-services-sl.jpg", alt: "Services S&L - Financement Crédit-bail", href: "https://www.facebook.com/paskalfinancement" },
+  { id: "st-michel", kind: "logo", imageSrc: "/sponsor-st-michel.jpg", alt: "Café St-Michel - Bar / Resto", href: "https://www.facebook.com/cafestmichel", bg: "bg-black" },
   { id: "cign-2", kind: "cign", logoSrc: "/cign-fm-967.png", alt: "CIGN-FM 96.7 Radio-Bingo", href: "tel:+18198040967" },
-  { id: "libre-4", kind: "placeholder", text: "Votre Logo ICI - Contactez Paskal à paskal.brochu@gmail.com", alt: "Espace publicitaire disponible", href: "mailto:paskal.brochu@gmail.com" },
-  { id: "libre-5", kind: "placeholder", text: "Votre Logo ICI - Contactez Paskal à paskal.brochu@gmail.com", alt: "Espace publicitaire disponible", href: "mailto:paskal.brochu@gmail.com" },
+  { id: "progym", kind: "logo", imageSrc: "/sponsor-progym.webp", alt: "ProGym - Centre d'entraînement", href: "https://www.progym.ca/", bg: "bg-black" },
+  { id: "playground", kind: "logo", imageSrc: "/sponsor-playground.webp", alt: "Playground Casino", href: "https://www.playground.ca/", bg: "bg-black" },
+  { id: "libre-1", kind: "placeholder", text: "Votre Logo ICI - Contactez Paskal à paskal.brochu@gmail.com", alt: "Espace publicitaire disponible", href: "mailto:paskal.brochu@gmail.com" },
 ];
 
-// Hauteur uniforme (h-24) pour tous. Largeur : standard (w-72), CIGN plus large (w-96)
-// pour laisser respirer le texte du commanditaire.
 function PromoCard({ promo }: { promo: Promo }) {
-  const base =
-    "flex items-center justify-center shrink-0 h-24 px-3 mx-2 rounded-lg overflow-hidden transition-transform hover:scale-[1.02]";
-
   if (promo.kind === "logo") {
+    // p-1.5/p-2 = petite marge interne ; img h-full w-full + object-contain -> remplit
+    // la boite au max sans deformer (le detourage du fichier fait le reste).
     return (
-      <a href={promo.href} target="_blank" rel="noopener noreferrer" title={promo.alt} className={base + " w-72 bg-white"}>
-        <img src={promo.imageSrc} alt={promo.alt} className="max-h-16 w-auto object-contain" />
+      <a
+        href={promo.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        title={promo.alt}
+        className={`${CARD_BASE} ${CARD_H} ${CARD_W} p-1.5 sm:p-2 ${promo.bg ?? "bg-white"}`}
+      >
+        <img src={promo.imageSrc} alt={promo.alt} className="h-full w-full object-contain" />
       </a>
     );
   }
 
   if (promo.kind === "cign") {
     return (
-      <a href={promo.href} title={promo.alt} className={base + " w-96 bg-white"}>
-        <div className="flex flex-col items-center justify-center gap-0.5 w-full h-full text-center px-3 font-sans">
-          <img src={promo.logoSrc} alt={promo.alt} className="h-7 w-auto object-contain mb-0.5" />
-          <span className="text-[11px] leading-snug font-bold text-black">{CIGN_LINE1}</span>
-          <span className="text-[11px] leading-snug text-slate-800">{CIGN_LINE2}</span>
-          <span className="text-base font-black tracking-wide text-black">{CIGN_PHONE}</span>
+      <a href={promo.href} title={promo.alt} className={`${CARD_BASE} ${CARD_H} ${CARD_W_CIGN} bg-white`}>
+        <div className="flex flex-col items-center justify-center gap-0.5 w-full h-full text-center px-2 font-sans leading-tight">
+          <img src={promo.logoSrc} alt={promo.alt} className="h-5 sm:h-6 w-auto object-contain" />
+          <span className="text-[9px] sm:text-[10px] font-bold text-black">{CIGN_LINE1}</span>
+          <span className="text-[9px] sm:text-[10px] text-slate-800">{CIGN_LINE2}</span>
+          <span className="text-sm sm:text-base font-black tracking-wide text-black">{CIGN_PHONE}</span>
         </div>
       </a>
     );
@@ -65,7 +91,7 @@ function PromoCard({ promo }: { promo: Promo }) {
     <a
       href={promo.href}
       title={promo.alt}
-      className={base + " w-72 border border-dashed border-slate-500/70 bg-slate-800/40 text-[11px] text-slate-300 text-center leading-tight"}
+      className={`${CARD_BASE} ${CARD_H} ${CARD_W} px-3 border border-dashed border-slate-500/70 bg-slate-800/40 text-[10px] sm:text-[11px] text-slate-300 text-center leading-tight`}
     >
       <span>{promo.text}</span>
     </a>
@@ -75,9 +101,9 @@ function PromoCard({ promo }: { promo: Promo }) {
 export default function AdCarousel() {
   const shouldScroll = PROMOS.length > SCROLL_THRESHOLD;
 
-  // Conteneur a HAUTEUR FIXE : la bande ne peut jamais collapser.
+  // Conteneur a HAUTEUR FIXE (responsive) : la bande ne peut jamais collapser.
   return (
-    <div className="w-full h-28 overflow-hidden flex items-center">
+    <div className="w-full h-24 sm:h-28 overflow-hidden flex items-center">
       {shouldScroll ? (
         // Defilement : liste dupliquee pour une boucle continue sans trou.
         // .mq-track est defini dans index.css (@keyframes ticker, droite -> gauche).
