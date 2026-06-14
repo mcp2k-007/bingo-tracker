@@ -21,6 +21,21 @@
 // espace ni accent (Vercel = Linux, sensible a la casse). Lien possible vers un
 // site, Instagram, Facebook, Google Maps ou tel:.
 
+import { supabase } from "../lib/supabase";
+
+// Enregistre un clic commanditaire (anonyme, fire-and-forget). Ne bloque JAMAIS
+// la navigation : un clic non logge ne doit pas empecher l'ouverture du lien.
+function recordClick(sponsorId: string) {
+  try {
+    supabase.from("sponsor_clicks").insert({ sponsor_id: sponsorId }).then(
+      () => {},
+      () => {},
+    );
+  } catch {
+    /* jamais de crash */
+  }
+}
+
 const SCROLL_THRESHOLD = 4;
 
 // Texte du commanditaire CIGN-FM, decoupe en lignes lisibles.
@@ -66,6 +81,7 @@ function PromoCard({ promo }: { promo: Promo }) {
         target="_blank"
         rel="noopener noreferrer"
         title={promo.alt}
+        onClick={() => recordClick(promo.id)}
         className={`${CARD_BASE} ${CARD_H} ${CARD_W} p-1.5 sm:p-2 ${promo.bg ?? "bg-white"}`}
       >
         <img src={promo.imageSrc} alt={promo.alt} className="h-full w-full object-contain" />
@@ -75,7 +91,7 @@ function PromoCard({ promo }: { promo: Promo }) {
 
   if (promo.kind === "cign") {
     return (
-      <a href={promo.href} title={promo.alt} className={`${CARD_BASE} ${CARD_H} ${CARD_W_CIGN} bg-white`}>
+      <a href={promo.href} onClick={() => recordClick(promo.id)} title={promo.alt} className={`${CARD_BASE} ${CARD_H} ${CARD_W_CIGN} bg-white`}>
         <div className="flex flex-col items-center justify-center gap-0.5 w-full h-full text-center px-2 font-sans leading-tight">
           <img src={promo.logoSrc} alt={promo.alt} className="h-5 sm:h-6 w-auto object-contain" />
           <span className="text-[9px] sm:text-[10px] font-bold text-black">{CIGN_LINE1}</span>
@@ -90,6 +106,7 @@ function PromoCard({ promo }: { promo: Promo }) {
   return (
     <a
       href={promo.href}
+      onClick={() => recordClick(promo.id)}
       title={promo.alt}
       className={`${CARD_BASE} ${CARD_H} ${CARD_W} px-3 border border-dashed border-slate-500/70 bg-slate-800/40 text-[10px] sm:text-[11px] text-slate-300 text-center leading-tight`}
     >

@@ -26,7 +26,7 @@ function LiveView() {
   useLiveAudience(true)
 
   // Phase 3.6 : enregistre une SESSION persistante (analytics commanditaires).
-  useViewerSession()
+  useViewerSession(radio.isPlaying)
 
   if (isLoading) {
     return (
